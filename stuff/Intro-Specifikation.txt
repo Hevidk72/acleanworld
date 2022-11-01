@@ -1,0 +1,40 @@
+Hej Henrik 
+Her er hvad vi snakkede om.
+Håber stadig du har lyst og mod.
+
+
+-- 
+Venlig hilsen 
+ 
+Martin Drejer Hansen
+ 
+Tlf. 91 52 76 49
+
+----------------------------------------------------------------------------------------------------------------------------
+
+Hej Henrik 
+
+Her er et forslag til et baggrundskort som har flere stier og veje end maps har.
+Samt ønsker, hvis du har tid og brug for et møde med Torben og mig omkring dette vil vi gerne komme forbi.
+
+Kravspecifikation for mini-app:
+VIGTIGT:
+•         www.openstreetmap.org
+•         Telefonernes datapunkter skal lagres ift. kortets datapunkter, så nøjagtigheden kan analyseres til brug for den endelige app. Lagringstæthed: 5-10 m - jo tættere jo bedre.
+•         Start- og stopposition - start / stop af tracking. Måske bare ved at åbne/lukke app'en.
+ 
+ØNSKELIGT:
+•         Ruten må meget gerne kunne måles, så brugeren kan se, hvor langt de har gået.
+•         Dato- eller nummermærkning af den enkelte rute, så den kan spores ift. den rute/kg registrering, der laves.
+ 
+NICE TO HAVE:
+•         Hvis der nemt kan integreres et "excelark", hvor man kan registrere opsamlet kg affald pr. rute og bruger, så vil det være super, men ikke et krav.
+ 
+
+
+-- 
+Venlig hilsen 
+ 
+Martin Drejer Hansen
+ 
+Tlf. 91 52 76 49
