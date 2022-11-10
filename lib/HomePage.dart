@@ -24,12 +24,11 @@ class _HomePageState extends State<HomePage> {
         // in the below line, we are specifying our app bar.
         appBar: AppBar(
           // setting background color for app bar
-          backgroundColor: Color(0xFF0F9D58),
+          backgroundColor: Colors.blueAccent,
           // setting title for app bar.
-          title: const Text("A Clean World"),
+          title: const Text("A Cleaner World"),
           centerTitle:true,
-          leading: const Icon(Icons.keyboard_backspace,          
-          ),
+          leading: const Icon(Icons.menu_book),
         ),
         
         body: Container(
@@ -39,7 +38,7 @@ class _HomePageState extends State<HomePage> {
               MapOptions(center: LatLng(-12.069783, -77.034057), zoom: 13.0),
           layers: [
             TileLayerOptions(
-                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'),
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'),              
             MarkerLayerOptions(markers: [
               Marker(
                   width: 30.0,
@@ -50,7 +49,7 @@ class _HomePageState extends State<HomePage> {
                         child: Icon(
                           Icons.location_on,
                           color: Colors.blueAccent,
-                          size: 40,
+                          size: 20,
                         ),
                       )))
             ])]
