@@ -1,6 +1,8 @@
+import 'package:acleanworld/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 
 class BouncingButton extends StatefulWidget {
+  static const String route = '/BouncingButton';
   @override
   _BouncingButtonState createState() => _BouncingButtonState();
 }
@@ -39,6 +41,7 @@ class _BouncingButtonState extends State<BouncingButton>
         centerTitle: true,
         automaticallyImplyLeading: false,
       ),
+      drawer: buildDrawer(context, BouncingButton.route),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
