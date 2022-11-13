@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class BouncingButton extends StatefulWidget {
   static const String route = '/BouncingButton';
+  const BouncingButton({Key? key}) : super(key: key);
   @override
   _BouncingButtonState createState() => _BouncingButtonState();
 }
@@ -36,30 +37,24 @@ class _BouncingButtonState extends State<BouncingButton>
   Widget build(BuildContext context) {
     _scale = 1 - _controller.value;
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar
+      (
         title: Text("Flutter Bouncing Button Animation Demo"),
-        centerTitle: true,
-        automaticallyImplyLeading: false,
+        centerTitle: true,        
       ),
       drawer: buildDrawer(context, BouncingButton.route),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text(
-            'Press the Below Button',
-            style: TextStyle(color: Colors.grey[400], fontSize: 20.0),
-          ),
-          SizedBox(
-            height: 20.0,
-          ),
-          Center(
-            child: GestureDetector(
+          Text('Press the Below Button',style: TextStyle(color: Colors.grey[400], fontSize: 20.0)),
+          SizedBox(height: 20.0),
+          Center
+          (
+            child: GestureDetector
+            (
               onTapDown: _tapDown,
               onTapUp: _tapUp,
-              child: Transform.scale(
-                scale: _scale,
-                child: _animatedButton(),
-              ),
+              child: Transform.scale(scale: _scale,child: _animatedButton()),
             ),
           ),
         ],
@@ -85,12 +80,12 @@ class _BouncingButtonState extends State<BouncingButton>
             end: Alignment.bottomRight,
             colors: [
               Color(0xff33ccff),
-              Color(0xffff99cc),
+              Color.fromARGB(255, 5, 235, 204),
             ],
           )),
       child: Center(
         child: Text(
-          'Press',
+          'Press me long time...',
           style: TextStyle(
               fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.black),
         ),
@@ -105,4 +100,7 @@ class _BouncingButtonState extends State<BouncingButton>
   void _tapUp(TapUpDetails details) {
     _controller.reverse();
   }
+
+
+
 }
