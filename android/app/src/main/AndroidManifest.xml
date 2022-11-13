@@ -1,5 +1,9 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="dk.heki.acleanworld">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="dk.heki.acleanworld">
+   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+   <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+   <uses-permission android:name="android.permission.INTERNET" />
+   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
    <application
         android:label="A Clean World"
         android:name="${applicationName}"
@@ -36,9 +40,4 @@
             android:value="AIzaSyAYZx3GxAQJuRgx8AfQKqDBq6GmNdr6jLo" 
             />        
     </application>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-</manifest>
+ </manifest>
