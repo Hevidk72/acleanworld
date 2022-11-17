@@ -1,6 +1,5 @@
 import 'package:acleanworld/HomePage.dart';
 import 'package:flutter/material.dart';
-import 'package:acleanworld/Auth.dart';
 
 class Splash extends StatefulWidget 
 {
@@ -21,9 +20,8 @@ void initState()
 _navigatetohome() async 
 {
   await Future.delayed(const Duration(milliseconds: 3000),);
-  Navigator.pushNamed(context,Auth.route);
+  Navigator.pushNamed(context,HomePage.route);
 }
-
 
 @override
   Widget build(BuildContext context) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:acleanworld/HomePage.dart';
-import 'package:acleanworld/Auth.dart';
+import 'package:acleanworld/settings.dart';
 
 Widget _buildMenuItem(
     BuildContext context, Widget title, String routeName, String currentRoute, IconData icon) {
@@ -58,7 +58,7 @@ Drawer buildDrawer(BuildContext context, String currentRoute)
           ),
         ),),
         _buildMenuItem(context,const Text('Main Page'), HomePage.route, currentRoute, Icons.home),
-        _buildMenuItem(context,const Text('Settings'),Auth.route, currentRoute, Icons.settings),
+        _buildMenuItem(context,const Text('Settings'),settings.route, currentRoute, Icons.settings),
         /*_buildMenuItem(context,const Text('WMS Layer'),WMSLayerPage.route,currentRoute, )*/
       ],
     ),  

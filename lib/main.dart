@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Splash.dart';
 import 'HomePage.dart';
-import 'Auth.dart';
+import 'settings.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>
       {
         HomePage.route: (context) => const HomePage(),
-        Auth.route: (context) => const Auth()
+        settings.route: (context) => const settings()
       }
     );
   }

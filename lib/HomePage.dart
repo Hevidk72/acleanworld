@@ -9,6 +9,12 @@ import 'package:acleanworld/widgets/drawer.dart';
 import 'package:acleanworld/utils/utils.dart';
 
 
+Future<void> main() async {
+  print("Supabase.initialize");
+  //await Supabase.initialize(url: 'https://zbqoritnaqhkridbyaxc.supabase.co', anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpicW9yaXRuYXFoa3JpZGJ5YXhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Njg2MzI0NDEsImV4cCI6MTk4NDIwODQ0MX0.NO3SvLCPEmXMFIVFiHBYV9ZLp0o2IFgndMzpkwQG_F0');
+  runApp(const HomePage());
+}
+
 class HomePage extends StatefulWidget {
   static const String route = '/HomePage';
   const HomePage({Key? key}) : super(key: key);
@@ -25,6 +31,7 @@ class _HomePageState extends State<HomePage> {
   String? _serviceError = '';
   int interActiveFlags = InteractiveFlag.all;
   final Location _locationService = Location();
+  //final supabase = Supabase.instance.client;
 
   @override
   void initState() {
@@ -61,8 +68,8 @@ class _HomePageState extends State<HomePage> {
                 // If Live Update is enabled, move map center
                 if (_liveUpdate) 
                 {
-                  //showAlert(context, "Ready to Rock and Roll! \n ${_currentLocation!.latitude!}", 0);
-                  _mapController.move(LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!), _mapController.zoom ?? 17);
+                  // showAlert(context, "Ready to Rock and Roll! \n ${_currentLocation!.latitude!}", 0);
+                  _mapController.move(LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!), _mapController.zoom);
                 }
               });
             }
@@ -133,7 +140,7 @@ class _HomePageState extends State<HomePage> {
           [
             Padding
             (
-              padding: const EdgeInsets.only(top: 8, bottom: 8),
+              padding: const EdgeInsets.only(top: 0, bottom: 0),
               child: _serviceError!.isEmpty
                   ? Text('Din position: (${currentLatLng.latitude}, ${currentLatLng.longitude}) and Zoom=${_currentZoom}' )//Text('This is a map that is showing (${currentLatLng.latitude}, ${currentLatLng.longitude}) and zoom=${_mapController.zoom}.')
                   : Text('Error occured while acquiring location. Error Message : $_serviceError'),
@@ -166,13 +173,16 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: Builder(builder: (BuildContext context) {
         return FloatingActionButton(
-          onPressed: () {
-            setState(() {
+          onPressed: () 
+          {
+            setState(() 
+            {
               _liveUpdate = !_liveUpdate;
               if (_liveUpdate) 
               {
                 _mapController.move(LatLng(currentLatLng.latitude, currentLatLng.longitude), 18.49);
                 interActiveFlags = InteractiveFlag.rotate | InteractiveFlag.pinchZoom | InteractiveFlag.doubleTapZoom;
+                
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar( content: Text('I live update mode virker kun zoom og rotation.'),));
               } 
               else 
