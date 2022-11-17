@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'Splash.dart';
 import 'HomePage.dart';
-import 'bouncing_button.dart';
+import 'Auth.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,11 +23,11 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,        
       ),
       // First Screen of our App
-      home: const HomePage(),
+      home: const Splash(),
       routes: <String, WidgetBuilder>
       {
         HomePage.route: (context) => const HomePage(),
-        BouncingButton.route: (context) => const BouncingButton()
+        Auth.route: (context) => const Auth()
       }
     );
   }

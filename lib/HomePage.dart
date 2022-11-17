@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:acleanworld/widgets/drawer.dart';
 import 'package:acleanworld/utils/utils.dart';
@@ -61,7 +62,7 @@ class _HomePageState extends State<HomePage> {
                 if (_liveUpdate) 
                 {
                   //showAlert(context, "Ready to Rock and Roll! \n ${_currentLocation!.latitude!}", 0);
-                  _mapController.move(LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!), _currentZoom);
+                  _mapController.move(LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!), _mapController.zoom ?? 17);
                 }
               });
             }
@@ -115,7 +116,7 @@ class _HomePageState extends State<HomePage> {
         width: 80,
         height: 80,
         point: currentLatLng,
-        builder: (ctx) => Icon(Icons.person),
+        builder: (ctx) => Icon(Icons.my_location),
       ),
     ];
 
@@ -126,7 +127,7 @@ class _HomePageState extends State<HomePage> {
       ),
       drawer: buildDrawer(context, HomePage.route),
       body: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(0),
         child: Column(
           children: 
           [
@@ -134,7 +135,7 @@ class _HomePageState extends State<HomePage> {
             (
               padding: const EdgeInsets.only(top: 8, bottom: 8),
               child: _serviceError!.isEmpty
-                  ? Text('This is a map that is showing (${currentLatLng.latitude}, ${currentLatLng.longitude}) and Zoom=${_currentZoom}')//Text('This is a map that is showing (${currentLatLng.latitude}, ${currentLatLng.longitude}) and zoom=${_mapController.zoom}.')
+                  ? Text('Din position: (${currentLatLng.latitude}, ${currentLatLng.longitude}) and Zoom=${_currentZoom}' )//Text('This is a map that is showing (${currentLatLng.latitude}, ${currentLatLng.longitude}) and zoom=${_mapController.zoom}.')
                   : Text('Error occured while acquiring location. Error Message : $_serviceError'),
             ),
             Flexible
