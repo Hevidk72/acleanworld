@@ -1,5 +1,6 @@
 import 'package:acleanworld/HomePage.dart';
 import 'package:flutter/material.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 class Splash extends StatefulWidget 
 {
@@ -54,11 +55,7 @@ _navigatetohome() async
                       CircleAvatar(
                         backgroundColor: Colors.blue,
                         radius: 100.0,
-                        child: Icon(
-                          Icons.keyboard,
-                          color: Colors.greenAccent,
-                          size: 75.0,
-                        ),
+                        child: Icon(LineAwesomeIcons.globe, color: Colors.greenAccent, size: 148.0),
                       ), 
                     ],
                   ),

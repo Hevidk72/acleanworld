@@ -1,5 +1,5 @@
 name: acleanworld
-description: A new Flutter project.
+description: Lets make it a cleaner world!
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -41,7 +41,17 @@ dependencies:
   flutter_map: ^3.0.0
   shared_preferences: ^2.0.15  
   supabase_flutter: ^1.1.0
-  
+  flutter_launcher_icons: "^0.11.0"
+  line_awesome_flutter: ^2.0.0
+
+flutter_icons:
+  image_path: "assets/ic_launcher144xd144.png" 
+  android: true
+  ios: true
+  macos: true
+  windows: true
+  # optionally, as transparency is not allowed on app store
+  # remove_alpha_ios: true
 
 dev_dependencies:
   flutter_test:
