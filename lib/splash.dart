@@ -20,8 +20,8 @@ void initState()
 
 _navigatetohome() async 
 {
-  await Future.delayed(const Duration(milliseconds: 3000),);
-  Navigator.pushNamed(context,HomePage.route);
+  await Future.delayed(const Duration(milliseconds: 4000),);
+  Navigator.pushNamed(context,HomePage.route);  
 }
 
 @override

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -30,22 +32,46 @@ class _HomePageState extends State<HomePage> {
   final Location _locationService = Location();
   bool debug = true;
   List<trip> currentTrip = [];
+  List<LatLng> currpoints = [];
+  bool initialPosition = false;
+  late SupabaseClient dataBase;
   
+  /*
+  late Future<List<Polyline>> polylines;
+  Future<List<Polyline>> getPolylines() async {
+    final polyLines = [
+      Polyline(
+        points: [
+          LatLng(50.5, -0.09),
+          LatLng(51.3498, -6.2603),
+          LatLng(53.8566, 2.3522),
+        ],
+        strokeWidth: 4,
+        color: Color.fromARGB(255, 90, 243, 2),
+      ),
+    ];
+    await Future<void>.delayed(const Duration(seconds: 3));
+    return polyLines;
+  }
+*/
+
   @override
   void initState() {
     super.initState();
-    _mapController = MapController();
+    _mapController = MapController();    
     initLocationService();
     
     if (debug) debugPrint("Supabase.initialize");
     Supabase.initialize(url: 'https://zbqoritnaqhkridbyaxc.supabase.co', anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpicW9yaXRuYXFoa3JpZGJ5YXhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Njg2MzI0NDEsImV4cCI6MTk4NDIwODQ0MX0.NO3SvLCPEmXMFIVFiHBYV9ZLp0o2IFgndMzpkwQG_F0');
-    final supabase = Supabase.instance.client;
+    dataBase = Supabase.instance.client;
+    dataBase.auth.signInWithPassword(password: "Boysenfv1",email: "henrik@heki.dk");
+
         //showAlert(context, "Ready to Rock and Roll!", 0);
   }
 
    void initLocationService() async 
    {
-    await _locationService.changeSettings(accuracy: LocationAccuracy.high, interval: 1000);
+    await _locationService.changeSettings(accuracy: LocationAccuracy.high, interval: 500);
 
     LocationData? location;
     bool serviceEnabled;
@@ -66,14 +92,21 @@ class _HomePageState extends State<HomePage> {
             if (mounted) {
               setState(() {
                 _currentLocation = result;
-                // If Live Update is enabled, move map center
+                if (debug) debugPrint(" Sattelites / Provider = ${_currentLocation!.satelliteNumber} / ${_currentLocation!.provider}");
+                
+                // initial position
+                if (!initialPosition) _mapController.move(LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!), 18.49); 
+                initialPosition = true;
+
+                // If Live Update / Recording trip is enabled, move map center
                 if (_liveUpdate) 
                 {
-                   //showAlert(context, "Ready to Rock and Roll! \n ${_currentLocation!.latitude!}", 0);
-                   print("Logging position ");
+                   debugPrint("Logging position setting camera to current location");
                   _mapController.move(LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!), _mapController.zoom);
-                  // Todo log trip data here:
+                  
+                  // logging trip data here:
                   currentTrip.add(trip(lat: _currentLocation!.latitude!, long: _currentLocation!.longitude!));
+                  currpoints.add(LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!));
                 }
               });
             }
@@ -126,8 +159,8 @@ class _HomePageState extends State<HomePage> {
     [
       Marker
       (
-        width: 80,
-        height: 80,
+        width: 40,
+        height: 40,
         point: currentLatLng,
         builder: (ctx) => const Icon(Icons.my_location),
       ),
@@ -171,6 +204,18 @@ class _HomePageState extends State<HomePage> {
                     userAgentPackageName: 'dev.fleaflet.flutter_map.example',
                   ),
                   MarkerLayer(markers: markers),
+                  PolylineLayer(
+                                polylines: 
+                                [
+                                  Polyline
+                                  (
+                                    isDotted: true,                                                                        
+                                    points: currpoints,
+                                    strokeWidth: 4,
+                                    color: Colors.green
+                                  ),
+                                ],
+                               ),
                 ],
               ),
             ),
@@ -190,7 +235,9 @@ class _HomePageState extends State<HomePage> {
                 _mapController.move(LatLng(currentLatLng.latitude, currentLatLng.longitude), 18.49);
                 interActiveFlags = InteractiveFlag.rotate | InteractiveFlag.pinchZoom | InteractiveFlag.doubleTapZoom;
                 // Todo call dialog box to start recording trip in to an array
-
+                //Clear trip and polyline
+                currentTrip.clear();
+                currpoints.clear();
                 
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar( content: Text('I live update mode virker kun zoom og rotation.'),));
               } 
@@ -200,14 +247,36 @@ class _HomePageState extends State<HomePage> {
                 _mapController.move(LatLng(currentLatLng.latitude, currentLatLng.longitude), 18.49);
                 interActiveFlags = InteractiveFlag.all;
                 // Todo call dialog box to stop recording current trip or cancel trip. Get notes and kg litter collected and update Database.
-                if (debug)  
-                {
+
+                // Dialog: Do you want to save this trip ?.
+                // Ask for trip litter weight in kg approx.
+                // Calculate trip length in meters
+              
+
+                // Add trip to database and draw current trip on Polyline layer                
                   for (var trip in currentTrip) 
                   {                    
-                      debugPrint("lat is: ${trip.lat} and long is: ${trip.long}");                    
+                      debugPrint("lat is: ${trip.lat} and long is: ${trip.long}");   
+                      
+                     // currpoints.add(LatLng(trip.lat,trip.long));                      
                   }
+
+                  var currentTripsMap = currentTrip.map((e)
+                  {
+                    return {"lat": e.lat,"long": e.long};
+                  }).toList();
                   
-                }
+                  var jsonTrip = jsonEncode(currentTripsMap);
+                  if (debug) debugPrint(jsonTrip);
+
+                  // Add trip to cloud database:                  
+                  var data = dataBase.from('trips_tab').insert({"user_id": "HEVI","trip_data": "Test Data"});
+                  
+                  var data1 = dataBase.from('trips_tab').insert({"user_id": "HEVI","trip_data": jsonTrip});
+                
+                if (debug) debugPrint(data.catchError.toString());                                  
+                if (debug) debugPrint(data1.catchError.toString());
+
               }
             });
           },

@@ -6,6 +6,7 @@ class trip
    double long;
    trip({required this.lat, required this.long});
 }
+
   Future showAlert(BuildContext context, String messageText, int delayed) async {
     await Future.delayed(Duration(seconds: delayed));
 
