@@ -5,13 +5,20 @@ import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+//Database integration  (https://app.supabase.com/projects)
+import 'package:supabase/supabase.dart';
 
+//Local utils
 import 'package:acleanworld/widgets/drawer.dart';
 import 'package:acleanworld/utils/utils.dart';
 
+bool debug = true;
+SupabaseClient dataBase = SupabaseClient('https://zbqoritnaqhkridbyaxc.supabase.co', 
+                                         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpicW9yaXRuYXFoa3JpZGJ5YXhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Njg2MzI0NDEsImV4cCI6MTk4NDIwODQ0MX0.NO3SvLCPEmXMFIVFiHBYV9ZLp0o2IFgndMzpkwQG_F0');
+                                           
+
 Future<void> main() async {
-    runApp(const HomePage());
+      runApp(const HomePage());
 }
 
 class HomePage extends StatefulWidget {
@@ -30,12 +37,16 @@ class _HomePageState extends State<HomePage> {
   String? _serviceError = '';
   int interActiveFlags = InteractiveFlag.all;
   final Location _locationService = Location();
-  bool debug = true;
+   
   List<trip> currentTrip = [];
   List<LatLng> currpoints = [];
   bool initialPosition = false;
-  late SupabaseClient dataBase;
-  
+
+  // Database init
+  static const supabaseUrl = 'https://zbqoritnaqhkridbyaxc.supabase.co';
+  static const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpicW9yaXRuYXFoa3JpZGJ5YXhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Njg2MzI0NDEsImV4cCI6MTk4NDIwODQ0MX0.NO3SvLCPEmXMFIVFiHBYV9ZLp0o2IFgndMzpkwQG_F0';
+  final dataBase = SupabaseClient(supabaseUrl, supabaseKey);
+
   /*
   late Future<List<Polyline>> polylines;
   Future<List<Polyline>> getPolylines() async {
@@ -54,17 +65,23 @@ class _HomePageState extends State<HomePage> {
     return polyLines;
   }
 */
+Future<void> addTrip(String tripData,String description,double litterCollected)
+async {
+  var data = await dataBase.from('trips_tab').insert({"user_id": "HEVI","trip_data": tripData,'litter_collected': litterCollected, 'description': description });
+  //var data1 = dataBase.from('trips_tab').insert({"user_id": "HEVI","trip_data": tripData});
+  if (debug) debugPrint(data.toString());                                  
+    //            if (debug) debugPrint(data1.toString());
+}
 
   @override
-  void initState() {
+   initState() {
     super.initState();
     _mapController = MapController();    
     initLocationService();
-    
-    if (debug) debugPrint("Supabase.initialize");
-    Supabase.initialize(url: 'https://zbqoritnaqhkridbyaxc.supabase.co', anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpicW9yaXRuYXFoa3JpZGJ5YXhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Njg2MzI0NDEsImV4cCI6MTk4NDIwODQ0MX0.NO3SvLCPEmXMFIVFiHBYV9ZLp0o2IFgndMzpkwQG_F0');
-    dataBase = Supabase.instance.client;
-    dataBase.auth.signInWithPassword(password: "Boysenfv1",email: "henrik@heki.dk");
+    if (debug) debugPrint("Supabase.test query");
+  // query data
+  final data = dataBase.from('users_tab').select().order('first_name', ascending: true);
+  debugPrint(data.toString());
 
         //showAlert(context, "Ready to Rock and Roll!", 0);
   }
@@ -213,7 +230,7 @@ class _HomePageState extends State<HomePage> {
                                     points: currpoints,
                                     strokeWidth: 4,
                                     color: Colors.green
-                                  ),
+                                  ),                                  
                                 ],
                                ),
                 ],
@@ -227,7 +244,7 @@ class _HomePageState extends State<HomePage> {
           onPressed: () 
           {
             setState(() 
-            {
+            {            
               _liveUpdate = !_liveUpdate;
               if (_liveUpdate) 
               {
@@ -270,15 +287,10 @@ class _HomePageState extends State<HomePage> {
                   if (debug) debugPrint(jsonTrip);
 
                   // Add trip to cloud database:                  
-                  var data = dataBase.from('trips_tab').insert({"user_id": "HEVI","trip_data": "Test Data"});
-                  
-                  var data1 = dataBase.from('trips_tab').insert({"user_id": "HEVI","trip_data": jsonTrip});
-                
-                if (debug) debugPrint(data.catchError.toString());                                  
-                if (debug) debugPrint(data1.catchError.toString());
+                  addTrip(jsonTrip, "A nice day to collect litter ", 2.85);
 
               }
-            });
+          });
           },
           child: _liveUpdate
               ? const Icon(Icons.stop_sharp)

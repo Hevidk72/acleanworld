@@ -40,9 +40,9 @@ dependencies:
   latlong2: ^0.8.1
   flutter_map: ^3.0.0
   shared_preferences: ^2.0.15  
-  supabase_flutter: ^1.1.0
   flutter_launcher_icons: "^0.11.0"
   line_awesome_flutter: ^2.0.0
+  supabase: ^1.2.0
 
 flutter_icons:
   image_path: "assets/ic_launcher144xd144.png" 
