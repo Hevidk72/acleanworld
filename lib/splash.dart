@@ -42,8 +42,7 @@ _navigatetohome() async
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(
-                        "A Cleaner World",
+                      Text("A Cleaner World",
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
