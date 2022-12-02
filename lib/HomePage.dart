@@ -35,9 +35,13 @@ class _HomePageState extends State<HomePage> {
   int interActiveFlags = InteractiveFlag.all;
   final Location _locationService = Location();
 
+  // Trip Variables
   List<trip> currentTrip = [];
   List<LatLng> currpoints = [];
   bool initialPosition = false;
+  late DateTime startTime_;
+  late DateTime stopTime_;
+  String description_ = "A nice day to collect litter";
 
   // Database init
   static const supabaseUrl = 'https://zbqoritnaqhkridbyaxc.supabase.co';
@@ -63,17 +67,15 @@ class _HomePageState extends State<HomePage> {
     return polyLines;
   }
 */
-  Future<void> addTrip(
-      String tripData, String description, double litterCollected) async {
+  Future<void> addTrip(String tripData, String description, double litterCollected, DateTime startDate, DateTime stopDate) async {
     var data = await dataBase.from('trips_tab').insert({
       "user_id": "HEVI",
       "trip_data": tripData,
-      'litter_collected': litterCollected,
-      'description': description
-    });
-    //var data1 = dataBase.from('trips_tab').insert({"user_id": "HEVI","trip_data": tripData});
-    if (debug) debugPrint(data.toString());
-    //            if (debug) debugPrint(data1.toString());
+      "litter_collected": litterCollected,
+      "description": description,
+      "start_date": startDate.toIso8601String(),
+      "stop_date": stopDate.toIso8601String()
+    });    
   }
 
   @override
@@ -87,14 +89,13 @@ class _HomePageState extends State<HomePage> {
         .from('users_tab')
         .select()
         .order('first_name', ascending: true);
-    debugPrint(data.toString());
+    debugPrint("SQL Query: ${data.csv().toString()}");
 
     //showAlert(context, "Ready to Rock and Roll!", 0);
   }
 
   void initLocationService() async {
-    await _locationService.changeSettings(
-        accuracy: LocationAccuracy.high, interval: 500);
+    await _locationService.changeSettings(accuracy: LocationAccuracy.high, interval: 1000);
 
     LocationData? location;
     bool serviceEnabled;
@@ -115,9 +116,7 @@ class _HomePageState extends State<HomePage> {
             if (mounted) {
               setState(() {
                 _currentLocation = result;
-                if (debug)
-                  debugPrint(
-                      " Sattelites / Provider = ${_currentLocation!.satelliteNumber} / ${_currentLocation!.provider}");
+                //if (debug) debugPrint(" Time / Speed = ${_currentLocation!.time} / ${_currentLocation!.speed}");
 
                 // initial position
                 if (!initialPosition)
@@ -129,8 +128,7 @@ class _HomePageState extends State<HomePage> {
 
                 // If Live Update / Recording trip is enabled, move map center
                 if (_liveUpdate) {
-                  debugPrint(
-                      "Logging position setting camera to current location");
+                  debugPrint("Logging position setting camera to current location");
                   _mapController.move(
                       LatLng(_currentLocation!.latitude!,
                           _currentLocation!.longitude!),
@@ -170,7 +168,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     LatLng currentLatLng;
-
     // Until currentLocation is initially updated, Widget can locate to 0, 0
     // by default or store previous location value to show.
     if (_currentLocation != null) {
@@ -201,18 +198,16 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.only(top: 0, bottom: 8),
               child: _serviceError!.isEmpty
-                  ? Text(
-                      'Din position: (${currentLatLng.latitude}, ${currentLatLng.longitude}) and Zoom=$_currentZoom') //Text('This is a map that is showing (${currentLatLng.latitude}, ${currentLatLng.longitude}) and zoom=${_mapController.zoom}.')
-                  : Text(
-                      'Error occured while acquiring location. Error Message : $_serviceError'),
+                  ? Text('Din position: (${currentLatLng.latitude}, ${currentLatLng.longitude}) and Zoom=$_currentZoom') 
+                  //Text('This is a map that is showing (${currentLatLng.latitude}, ${currentLatLng.longitude}) and zoom=${_mapController.zoom}.')
+                  : Text('Error occured while acquiring location. Error Message : $_serviceError'),
             ),
             Flexible(
               child: FlutterMap(
                 mapController: _mapController,
                 options: MapOptions(
                   maxZoom: 18.49,
-                  center:
-                      LatLng(currentLatLng.latitude, currentLatLng.longitude),
+                  center: LatLng(currentLatLng.latitude, currentLatLng.longitude),
                   interactiveFlags: interActiveFlags,
                 ),
                 children: [
@@ -242,54 +237,51 @@ class _HomePageState extends State<HomePage> {
           onPressed: () {
             setState(() {
               _liveUpdate = !_liveUpdate;
-              if (_liveUpdate) {
+              if (_liveUpdate) 
+              {
                 if (debug) debugPrint("Start Button pressed");
-                _mapController.move(
-                    LatLng(currentLatLng.latitude, currentLatLng.longitude),
-                    18.49);
-                interActiveFlags = InteractiveFlag.rotate |
-                    InteractiveFlag.pinchZoom |
-                    InteractiveFlag.doubleTapZoom;
+                _mapController.move(LatLng(currentLatLng.latitude, currentLatLng.longitude), 18.49);
+                interActiveFlags = InteractiveFlag.rotate | InteractiveFlag.pinchZoom | InteractiveFlag.doubleTapZoom;
                 // Todo call dialog box to start recording trip in to an array
                 //Clear trip and polyline
                 currentTrip.clear();
                 currpoints.clear();
-
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content:
-                      Text('I live update mode virker kun zoom og rotation.'),
-                ));
-              } else {
+                startTime_ = DateTime.now();   
+                
+                // Snackbar messsage
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text('I live update mode virker kun zoom og rotation.'),));
+              } 
+              else 
+              {
                 if (debug) debugPrint("Stop Button pressed");
-                _mapController.move(
-                    LatLng(currentLatLng.latitude, currentLatLng.longitude),
-                    18.49);
+                _mapController.move(LatLng(currentLatLng.latitude, currentLatLng.longitude), 18.49);
                 interActiveFlags = InteractiveFlag.all;
                 // Todo call dialog box to stop recording current trip or cancel trip. Get notes and kg litter collected and update Database.
+                stopTime_ = DateTime.now();
 
                 // Dialog: Do you want to save this trip ?.
                 // Ask for trip litter weight in kg approx.
                 // Calculate trip length in meters
+                if (debug) debugPrint("Before end Dialog");
+                showEndTripDialog(context,"Afslutning af tur ?",2);
+                if (debug) debugPrint("After end Dialog");
 
                 // Add trip to database and draw current trip on Polyline layer
-                for (var trip in currentTrip) {
-                  debugPrint("lat is: ${trip.lat} and long is: ${trip.long}");
-
-                  // currpoints.add(LatLng(trip.lat,trip.long));
+                if (debug)
+                {
+                  for (var trip in currentTrip) 
+                  {
+                    debugPrint("lat is: ${trip.lat} and long is: ${trip.long}");
+                    // currpoints.add(LatLng(trip.lat,trip.long));
+                  }
                 }
 
-                var currentTripsMap = currentTrip.map((e) {
-                  return {"lat": e.lat, "long": e.long};
-                }).toList();
-
+                var currentTripsMap = currentTrip.map((e){return {"lat": e.lat, "long": e.long};}).toList();
                 var jsonTrip = jsonEncode(currentTripsMap);
                 if (debug) debugPrint(jsonTrip);
-                dumpEnvironment();
-if (debug) debugPrint("");
-if (debug) debugPrint(jsonTrip);
-
+           
                 // Add trip to cloud database:
-                addTrip(jsonTrip, "A nice day to collect litter ", 2.85);
+                addTrip(jsonTrip, "A nice day to collect litter ", 2.85, startTime_, stopTime_);
               }
             });
           },
