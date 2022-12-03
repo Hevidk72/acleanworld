@@ -19,8 +19,9 @@ Future<void> main() async {
 }
 
 class HomePage extends StatefulWidget {
-  static const String route = '/HomePage';
+  static const String route = "HomePage";
   const HomePage({Key? key}) : super(key: key);
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -67,17 +68,6 @@ class _HomePageState extends State<HomePage> {
     return polyLines;
   }
 */
-  Future<void> addTrip(String tripData, String description, double litterCollected, DateTime startDate, DateTime stopDate) async {
-    var data = await dataBase.from('trips_tab').insert({
-      "user_id": "HEVI",
-      "trip_data": tripData,
-      "litter_collected": litterCollected,
-      "description": description,
-      "start_date": startDate.toIso8601String(),
-      "stop_date": stopDate.toIso8601String()
-    });    
-  }
-
   @override
   initState() {
     super.initState();
@@ -253,11 +243,11 @@ class _HomePageState extends State<HomePage> {
               } 
               else 
               {
-                if (debug) debugPrint("Stop Button pressed");
+                if (debug) debugPrint("Stop/resume Button pressed");
                 _mapController.move(LatLng(currentLatLng.latitude, currentLatLng.longitude), 18.49);
                 interActiveFlags = InteractiveFlag.all;
                 // Todo call dialog box to stop recording current trip or cancel trip. Get notes and kg litter collected and update Database.
-                stopTime_ = DateTime.now();
+                
 
                 // Dialog: Do you want to save this trip ?.
                 // Ask for trip litter weight in kg approx.
@@ -276,12 +266,7 @@ class _HomePageState extends State<HomePage> {
                   }
                 }
 
-                var currentTripsMap = currentTrip.map((e){return {"lat": e.lat, "long": e.long};}).toList();
-                var jsonTrip = jsonEncode(currentTripsMap);
-                if (debug) debugPrint(jsonTrip);
-           
-                // Add trip to cloud database:
-                addTrip(jsonTrip, "A nice day to collect litter ", 2.85, startTime_, stopTime_);
+                
               }
             });
           },
@@ -291,5 +276,51 @@ class _HomePageState extends State<HomePage> {
         );
       }),
     );
+  }
+
+  // End Trip
+  showEndTripDialog(
+    BuildContext context, String messageText, int delayed)  async {
+ await showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+        title: Text(messageText,style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18.0)),
+        content: TextField(autofocus: true,decoration: InputDecoration(hintText: "Beskrivelse")),
+        actions: <Widget>
+        [          
+          OutlinedButton(child: const Text("Afslut tur"), onPressed: () { endTrip(); Navigator.of(context).pop(); },),
+          OutlinedButton(child: const Text("Fortsæt tur"), onPressed: ()  { _liveUpdate=true; Navigator.of(context).pop(); },),
+        ],
+      );
+    },
+  );
+}
+
+  Future<void> endTrip()
+  async {
+    var currentTripsMap = currentTrip.map((e){return {"lat": e.lat, "long": e.long};}).toList();
+    var jsonTrip = jsonEncode(currentTripsMap);
+    if (debug) debugPrint(jsonTrip);
+    // Add trip to cloud database:
+    stopTime_ = DateTime.now();
+    var data = await dataBase.from('trips_tab').insert
+    (
+      {
+      "user_id": "HEVI",
+      "trip_data": jsonTrip,
+      "litter_collected": 2.5,
+      "description": "A nice day to collect litter ",
+      "start_date": startTime_.toIso8601String(),
+      "stop_date": stopTime_.toIso8601String()
+     }
+    );    
+    
+    _liveUpdate = false;
+
   }
 }

@@ -1,19 +1,22 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:acleanworld/widgets/drawer.dart';
+
 
 void main() {
   runApp(const settings());
 }
 
 class settings extends StatelessWidget {
-  static const String route = '/settings';
+  static const String route = '/Settings';
   const settings({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: 'SharedPreferences Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'Indstillinger',
       home: SharedPreferencesDemo(),
     );
   }
@@ -51,10 +54,11 @@ class SharedPreferencesDemoState extends State<SharedPreferencesDemo> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(      
       appBar: AppBar(
-        title: const Text('SharedPreferences Demo'),
+      title: const Text('Indstillinger'),
       ),
+      drawer: buildDrawer(context, settings.route),
       body: Center(
           child: FutureBuilder<int>(
               future: _counter,

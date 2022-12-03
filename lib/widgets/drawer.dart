@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:acleanworld/HomePage.dart';
-import 'package:acleanworld/settings.dart';
+import '../HomePage.dart';
+import '../settings.dart';
 
 Widget _buildMenuItem(
     BuildContext context, Widget title, String routeName, String currentRoute, IconData icon) {
@@ -17,6 +17,7 @@ Widget _buildMenuItem(
       } 
       else 
       {
+        debugPrint('Drawer RouteName: "$routeName" Current Route: "$currentRoute"');
         Navigator.pushReplacementNamed(context, routeName);
       }
     },
@@ -28,15 +29,14 @@ Drawer buildDrawer(BuildContext context, String currentRoute)
   return Drawer
   (
     //width: MediaQuery.of(context).size.width * 0.75,
-    elevation: 10,  
-    
+    elevation: 10,      
     child: ListView
     (
       padding: EdgeInsets.zero,
       children: <Widget>[
-        SizedBox
+        const SizedBox
         (
-        height: 100,
+        height: 95,
         child: DrawerHeader
         (
           decoration: BoxDecoration
@@ -49,17 +49,11 @@ Drawer buildDrawer(BuildContext context, String currentRoute)
               offset: Offset(0.0, 5.0),
             ),
           ] 
-          ),
-          
-          child: Center
-          (            
-            child: Text('Menu', style:  TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: Colors.white)),
-            heightFactor: 15,
-          ),
+          ),          
+          child: Text('Menu', style:  TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: Colors.white)),          
         ),),
-        _buildMenuItem(context,const Text('Main Page'), HomePage.route, currentRoute, Icons.home),
-        _buildMenuItem(context,const Text('Settings'),settings.route, currentRoute, Icons.settings),
-        /*_buildMenuItem(context,const Text('WMS Layer'),WMSLayerPage.route,currentRoute, )*/
+        _buildMenuItem(context,const Text('Kort',style: TextStyle(fontSize: 18.0)), HomePage.route, currentRoute, Icons.home),
+        _buildMenuItem(context,const Text('Indstillinger',style: TextStyle(fontSize: 18.0)), settings.route, currentRoute, Icons.settings),        
       ],
     ),  
   );

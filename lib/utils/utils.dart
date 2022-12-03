@@ -83,23 +83,4 @@ Future showNewTripDialog(
   );
 }
 
-showEndTripDialog(
-    BuildContext context, String messageText, int delayed)  async {
- await showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(messageText),
-        content: Row(const TextField(autofocus: true,decoration: InputDecoration(hintText: "Beskrivelse"))),
-        const TextField(autofocus: true,decoration: InputDecoration(hintText: "Beskrivelse")),        
-        actions: <Widget>[          
-            OutlinedButton( 
-                          child: const Text("OK"),
-                          onPressed: () {  Navigator.of(context).pop();  },
-          ),
-        ],
-      );
-    },
-  );
-}
+
