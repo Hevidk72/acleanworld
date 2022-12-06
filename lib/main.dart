@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'Splash.dart';
-import 'HomePage.dart';
+import 'homePage.dart';
 import 'settings.dart';
 
-void main() {
+void main() 
+{
   runApp(const MyApp());
 }
   
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget 
+{
   const MyApp({Key? key}) : super(key: key);
   
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {    
-    return MaterialApp(
+  Widget build(BuildContext context)  
+  { 
+    return MaterialApp
+    (
       // in the below line, we are specifying title of our app. 
       title: 'A Cleaner World',      
       // in the below line, we are hiding our debug banner. 
@@ -26,9 +30,11 @@ class MyApp extends StatelessWidget {
       home: const Splash(),
       routes: <String, WidgetBuilder>
       {
-        HomePage.route: (context) => const HomePage(),
+        homePage.route: (context) => const homePage(),
         settings.route: (context) => const settings()
       }
     );
+
+    
   }
 }

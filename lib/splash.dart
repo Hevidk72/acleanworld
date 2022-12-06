@@ -1,4 +1,4 @@
-import 'package:acleanworld/HomePage.dart';
+import 'package:acleanworld/homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
@@ -21,7 +21,7 @@ void initState()
 _navigatetohome() async 
 {
   await Future.delayed(const Duration(milliseconds: 4000),);
-  Navigator.pushNamed(context,HomePage.route);  
+  Navigator.pushNamed(context,homePage.route);  
 }
 
 @override

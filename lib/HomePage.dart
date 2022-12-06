@@ -15,18 +15,18 @@ import 'package:acleanworld/utils/utils.dart';
 bool debug = true;
 
 Future<void> main() async {
-  runApp(const HomePage());
+  runApp(const homePage());
 }
 
-class HomePage extends StatefulWidget {
-  static const String route = "HomePage";
-  const HomePage({Key? key}) : super(key: key);
+class homePage extends StatefulWidget {
+  static const String route = "/homePage";
+  const homePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<homePage> {
   LocationData? _currentLocation;
   double _currentZoom = 0;
   late final MapController _mapController;
@@ -180,7 +180,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('A Cleaner World')),
-      drawer: buildDrawer(context, HomePage.route),
+      drawer: buildDrawer(context, homePage.route),
       body: Padding(
         padding: const EdgeInsets.all(0),
         child: Column(

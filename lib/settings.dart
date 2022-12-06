@@ -1,87 +1,105 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:acleanworld/widgets/drawer.dart';
-
+import './utils/utils.dart';
 
 void main() {
-  runApp(const settings());
+  runApp(settings());
 }
 
-class settings extends StatelessWidget {
+class settings extends StatefulWidget  {
   static const String route = '/Settings';
   const settings({Key? key}) : super(key: key);
-
+  
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Indstillinger',
-      home: SharedPreferencesDemo(),
-    );
-  }
+  State<settings> createState() => _settingsState();
 }
 
-class SharedPreferencesDemo extends StatefulWidget {
-  const SharedPreferencesDemo({Key? key}) : super(key: key);
+class _settingsState extends State<settings> {
+  final _formKey = GlobalKey<FormState>();
 
-  @override
-  SharedPreferencesDemoState createState() => SharedPreferencesDemoState();
-}
-
-class SharedPreferencesDemoState extends State<SharedPreferencesDemo> {
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  late Future<int> _counter;
-
-  Future<void> _incrementCounter() async {
-    final SharedPreferences prefs = await _prefs;
-    final int counter = (prefs.getInt('counter') ?? 0) + 1;
-
-    setState(() {
-      _counter = prefs.setInt('counter', counter).then((bool success) {
-        return counter;
-      });
-    });
-  }
+  late final TextEditingController _emailController;
+  late final TextEditingController _passwordController;
 
   @override
   void initState() {
     super.initState();
-    _counter = _prefs.then((SharedPreferences prefs) {
-      return prefs.getInt('counter') ?? 0;
-    });
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
+    aps = getSettings();
+     print("Emailuser: $prefs.get('emailuser')");
+     print("Password: $prefs.get('password')");
   }
 
   @override
-  Widget build(BuildContext context) {
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+  
+   @override
+   Widget build(BuildContext context) {
     return Scaffold(      
       appBar: AppBar(
       title: const Text('Indstillinger'),
       ),
       drawer: buildDrawer(context, settings.route),
-      body: Center(
-          child: FutureBuilder<int>(
-              future: _counter,
-              builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                    return const CircularProgressIndicator();
-                  default:
-                    if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      return Text(
-                        'Button tapped ${snapshot.data} time${snapshot.data == 1 ? '' : 's'}.\n\n'
-                        'This should persist across restarts.',
-                      );
-                    }
-                }
-              })),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+      body: Center(child: Form(
+          key: _formKey,
+          child: Wrap(
+            alignment: WrapAlignment.spaceAround,
+              children: [              
+              TextFormField( 
+                controller: _emailController,
+                decoration: const InputDecoration(labelText: 'Email'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  bool emailValid = RegExp(
+                          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                      .hasMatch(value);
+
+                  if (!emailValid) {
+                    return 'Please enter a valid email';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(labelText: 'Password'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  if (value.length < 6) {
+                    return "Password must be at least 6 characters";
+                  }
+                  return null;
+                },
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
+                    print(_emailController.text);
+                    prefs.setString("useremail",_emailController.text);
+                    prefs.setString("password",_passwordController.text);
+                    print(_passwordController.text);
+                  }
+                },
+                child: const Text('Save'),
+              ),
+            ],
+          ),
+        ),
+      ),      
     );
   }
+  
+ 
 }
+
+

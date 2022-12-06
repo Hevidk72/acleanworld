@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../HomePage.dart';
+import '../homePage.dart';
 import '../settings.dart';
 
 Widget _buildMenuItem(
@@ -52,7 +52,7 @@ Drawer buildDrawer(BuildContext context, String currentRoute)
           ),          
           child: Text('Menu', style:  TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: Colors.white)),          
         ),),
-        _buildMenuItem(context,const Text('Kort',style: TextStyle(fontSize: 18.0)), HomePage.route, currentRoute, Icons.home),
+        _buildMenuItem(context,const Text('Kort',style: TextStyle(fontSize: 18.0)), homePage.route, currentRoute, Icons.home),
         _buildMenuItem(context,const Text('Indstillinger',style: TextStyle(fontSize: 18.0)), settings.route, currentRoute, Icons.settings),        
       ],
     ),  

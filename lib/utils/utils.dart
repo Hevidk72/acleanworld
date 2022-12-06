@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Get Shared Preferences
-final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-appSetting aps = appSetting(userName: "", password: "",  defaultZoom: 18);
+late final SharedPreferences prefs;
+appSetting aps = appSetting(userEmail: "", password: "",  defaultZoom: 18.49);
 
 class trip {
   double lat;
@@ -15,21 +15,22 @@ class trip {
 }
 
 class appSetting {
-  String userName = "";
+  String userEmail = "";
   String password = "";
   double defaultZoom;
 
   appSetting(
-      {required this.userName,
+      {required this.userEmail,
       required this.password,
       required this.defaultZoom});
 }
 
-Future<appSetting> getSettings() async {
-  final SharedPreferences prefs = await _prefs;  
+appSetting getSettings() {
+  prefs = SharedPreferences.getInstance();
   aps.defaultZoom = prefs.getDouble("defaultzoom") ?? 18.49;
-  aps.userName = prefs.getString("username") ?? "";
-  aps.password = prefs.getString("password") ?? "";
+  aps.userEmail = prefs.getString("useremail") ?? "";
+  aps.password = prefs.getString("password") ?? "";    
+  
   return aps;
 }
 
@@ -41,28 +42,6 @@ void dumpEnvironment() {
 }
 
 Future showAlert(BuildContext context, String messageText, int delayed) async {
-  await Future.delayed(Duration(seconds: delayed));
-
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(messageText),
-        actions: <Widget>[
-          OutlinedButton(
-            child: const Text("OK"),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
-
-Future showNewTripDialog(
-    BuildContext context, String messageText, int delayed) async {
   await Future.delayed(Duration(seconds: delayed));
 
   showDialog(
