@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // Get Shared Preferences
 late final SharedPreferences prefs;
-appSetting aps = appSetting(userEmail: "", password: "",  defaultZoom: 18.49);
+appSetting aps = appSetting(userEmail: "", password: "", defaultZoom: 18.49);
 
 class trip {
   double lat;
@@ -25,12 +25,13 @@ class appSetting {
       required this.defaultZoom});
 }
 
-appSetting getSettings() {
-  prefs = SharedPreferences.getInstance();
+Future<appSetting> getSettings() async {
+  final prefs = await SharedPreferences.getInstance();
+
   aps.defaultZoom = prefs.getDouble("defaultzoom") ?? 18.49;
   aps.userEmail = prefs.getString("useremail") ?? "";
-  aps.password = prefs.getString("password") ?? "";    
-  
+  aps.password = prefs.getString("password") ?? "";
+
   return aps;
 }
 
@@ -61,5 +62,3 @@ Future showAlert(BuildContext context, String messageText, int delayed) async {
     },
   );
 }
-
-

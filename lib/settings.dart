@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:acleanworld/widgets/drawer.dart';
 import './utils/utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(settings());
 }
 
-class settings extends StatefulWidget  {
+class settings extends StatefulWidget {
   static const String route = '/Settings';
   const settings({Key? key}) : super(key: key);
-  
+
   @override
   State<settings> createState() => _settingsState();
 }
@@ -25,9 +26,10 @@ class _settingsState extends State<settings> {
     super.initState();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
-    aps = getSettings();
-     print("Emailuser: $prefs.get('emailuser')");
-     print("Password: $prefs.get('password')");
+    var a_ = getSharedString("useremail");
+    var b_ = getSharedString("password");
+    print("Emailuser: $a_");
+    print("Password: $b_");
   }
 
   @override
@@ -36,20 +38,21 @@ class _settingsState extends State<settings> {
     _passwordController.dispose();
     super.dispose();
   }
-  
-   @override
-   Widget build(BuildContext context) {
-    return Scaffold(      
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
       appBar: AppBar(
-      title: const Text('Indstillinger'),
+        title: Text('Indstillinger ${getPrefString("usermail")}'),
       ),
       drawer: buildDrawer(context, settings.route),
-      body: Center(child: Form(
+      body: Center(
+        child: Form(
           key: _formKey,
           child: Wrap(
             alignment: WrapAlignment.spaceAround,
-              children: [              
-              TextFormField( 
+            children: [
+              TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: 'Email'),
                 validator: (value) {
@@ -85,9 +88,9 @@ class _settingsState extends State<settings> {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
                     print(_emailController.text);
-                    prefs.setString("useremail",_emailController.text);
-                    prefs.setString("password",_passwordController.text);
                     print(_passwordController.text);
+                    setPrefString("useremail", _emailController.text);
+                    setPrefString("password", _passwordController.text);
                   }
                 },
                 child: const Text('Save'),
@@ -95,11 +98,22 @@ class _settingsState extends State<settings> {
             ],
           ),
         ),
-      ),      
+      ),
     );
   }
-  
- 
+
+  // Handle Shared Preferences
+  Future<String> getPrefString(String str) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(str) ?? "";
+  }
+
+  Future<void> setPrefString(String str_, String value_) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(str_, value_);
+  }
+
+  Future<String?> getSharedString(String str_) async {
+    return await getPrefString(str_);
+  }
 }
-
-
