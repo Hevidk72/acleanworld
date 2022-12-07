@@ -2,37 +2,12 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// Get Shared Preferences
-late final SharedPreferences prefs;
-appSetting aps = appSetting(userEmail: "", password: "", defaultZoom: 18.49);
-
 class trip {
   double lat;
   double long;
   trip({required this.lat, required this.long});
   late DateTime startTime;
   late DateTime stopTime;
-}
-
-class appSetting {
-  String userEmail = "";
-  String password = "";
-  double defaultZoom;
-
-  appSetting(
-      {required this.userEmail,
-      required this.password,
-      required this.defaultZoom});
-}
-
-Future<appSetting> getSettings() async {
-  final prefs = await SharedPreferences.getInstance();
-
-  aps.defaultZoom = prefs.getDouble("defaultzoom") ?? 18.49;
-  aps.userEmail = prefs.getString("useremail") ?? "";
-  aps.password = prefs.getString("password") ?? "";
-
-  return aps;
 }
 
 void dumpEnvironment() {
@@ -42,7 +17,8 @@ void dumpEnvironment() {
   });
 }
 
-Future showAlert(BuildContext context, String messageText, int delayed) async {
+Future showAlert(BuildContext context, String messageText, int delayed) async 
+{
   await Future.delayed(Duration(seconds: delayed));
 
   showDialog(
@@ -61,4 +37,34 @@ Future showAlert(BuildContext context, String messageText, int delayed) async {
       );
     },
   );
+}
+
+//Shared Preferences
+
+  Future<void> initSPHelper()  async 
+  {
+    await SPHelper.sp.initSharedPreferences();
+    await Future.delayed(const Duration(milliseconds: 3000));
+  }
+
+class SPHelper {
+  SPHelper._();
+  static SPHelper sp = SPHelper._();
+  SharedPreferences? prefs;
+
+  Future<void> initSharedPreferences() async {
+    prefs = await SharedPreferences.getInstance();
+  }
+
+  Future<void> save(String name, String value) async {
+    await prefs?.setString(name, value);
+  }
+
+  String? get(String key) {
+    return prefs?.getString(key) ?? "";
+  }
+
+  Future<bool> delete(String key) async {
+    return await prefs!.remove(key);
+  }
 }
