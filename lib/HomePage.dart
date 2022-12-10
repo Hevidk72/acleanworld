@@ -8,7 +8,7 @@ import 'package:location/location.dart';
 //Database integration  (https://app.supabase.com/projects)
 import 'package:supabase/supabase.dart';
 
-//Local utils
+//Custom utils
 import 'package:acleanworld/widgets/drawer.dart';
 import 'package:acleanworld/utils/utils.dart';
 
@@ -43,6 +43,8 @@ class _HomePageState extends State<homePage> {
   late DateTime startTime_;
   late DateTime stopTime_;
   String description_ = "A nice day to collect litter";
+  late TextEditingController _descriptionController = TextEditingController();
+  late TextEditingController _kgController = TextEditingController();
 
   // Database init
   static const supabaseUrl = 'https://zbqoritnaqhkridbyaxc.supabase.co';
@@ -119,17 +121,11 @@ class _HomePageState extends State<homePage> {
                 // If Live Update / Recording trip is enabled, move map center
                 if (_liveUpdate) {
                   debugPrint("Logging position setting camera to current location");
-                  _mapController.move(
-                      LatLng(_currentLocation!.latitude!,
-                          _currentLocation!.longitude!),
-                      _mapController.zoom);
+                  _mapController.move(LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!),_mapController.zoom);
 
                   // logging trip data here:
-                  currentTrip.add(trip(
-                      lat: _currentLocation!.latitude!,
-                      long: _currentLocation!.longitude!));
-                  currpoints.add(LatLng(_currentLocation!.latitude!,
-                      _currentLocation!.longitude!));
+                  currentTrip.add(trip(lat: _currentLocation!.latitude!,long: _currentLocation!.longitude!));
+                  currpoints.add(LatLng(_currentLocation!.latitude!,_currentLocation!.longitude!));
                 }
               });
             }
@@ -182,7 +178,7 @@ class _HomePageState extends State<homePage> {
       appBar: AppBar(title: const Text('A Cleaner World')),
       drawer: buildDrawer(context, homePage.route),
       body: Padding(
-        padding: const EdgeInsets.all(0),
+        padding: const EdgeInsets.all(2),
         child: Column(
           children: [
             Padding(
@@ -201,11 +197,7 @@ class _HomePageState extends State<homePage> {
                   interactiveFlags: interActiveFlags,
                 ),
                 children: [
-                  TileLayer(
-                    urlTemplate:
-                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    userAgentPackageName: 'dev.fleaflet.flutter_map.example',
-                  ),
+                  TileLayer( urlTemplate:'https://tile.openstreetmap.org/{z}/{x}/{y}.png',  userAgentPackageName: 'dev.fleaflet.flutter_map.example',),
                   MarkerLayer(markers: markers),
                   PolylineLayer(
                     polylines: [
@@ -239,7 +231,7 @@ class _HomePageState extends State<homePage> {
                 startTime_ = DateTime.now();   
                 
                 // Snackbar messsage
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text('I live update mode virker kun zoom og rotation.'),));
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text('Din tur registreres nu, og kun zoom og rotation virker nu.'),));
               } 
               else 
               {
@@ -253,7 +245,7 @@ class _HomePageState extends State<homePage> {
                 // Ask for trip litter weight in kg approx.
                 // Calculate trip length in meters
                 if (debug) debugPrint("Before end Dialog");
-                showEndTripDialog(context,"Afslutning af tur ?",2);
+                showEndTripDialog(context,"Afslut tur eller fortsæt ?",2);
                 if (debug) debugPrint("After end Dialog");
 
                 // Add trip to database and draw current trip on Polyline layer
@@ -267,7 +259,7 @@ class _HomePageState extends State<homePage> {
                 }
 
                 
-              }
+                }
             });
           },
           child: _liveUpdate
@@ -281,20 +273,26 @@ class _HomePageState extends State<homePage> {
   // End Trip
   showEndTripDialog(
     BuildContext context, String messageText, int delayed)  async {
- await showDialog(
+    await showDialog(
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-        title: Text(messageText,style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18.0)),
-        content: TextField(autofocus: true,decoration: InputDecoration(hintText: "Beskrivelse")),
+        title: Text(messageText,style: TextStyle(color: Colors.black,fontSize: 18.0)),
+        content: Column(mainAxisAlignment: MainAxisAlignment.center,mainAxisSize: MainAxisSize.min,children: 
+        [
+          TextFormField(autofocus: true,decoration: InputDecoration(hintText: "Beskrivelse"),controller: _descriptionController,),
+          TextFormField(decoration: InputDecoration(hintText: "Antal kg samlet?"),controller: _kgController,)       
+        ]
+        ),
         actions: <Widget>
-        [          
-          OutlinedButton(child: const Text("Afslut tur"), onPressed: () { endTrip(); Navigator.of(context).pop(); },),
-          OutlinedButton(child: const Text("Fortsæt tur"), onPressed: ()  { _liveUpdate=true; Navigator.of(context).pop(); },),
+        [
+          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,children: 
+          [
+            OutlinedButton(child: const Text("Afslut"), onPressed: () { endTrip(); Navigator.of(context).pop(); },),
+            OutlinedButton(child: const Text("Fortsæt"), onPressed: ()  { _liveUpdate=true; Navigator.of(context).pop(); },),
+          ], )
         ],
       );
     },
@@ -313,8 +311,8 @@ class _HomePageState extends State<homePage> {
       {
       "user_id": "HEVI",
       "trip_data": jsonTrip,
-      "litter_collected": 2.5,
-      "description": "A nice day to collect litter ",
+      "litter_collected": _kgController.text,
+      "description": _descriptionController.text,
       "start_date": startTime_.toIso8601String(),
       "stop_date": stopTime_.toIso8601String()
      }

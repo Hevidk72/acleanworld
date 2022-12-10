@@ -8,6 +8,7 @@ class trip {
   trip({required this.lat, required this.long});
   late DateTime startTime;
   late DateTime stopTime;
+  
 }
 
 void dumpEnvironment() {
