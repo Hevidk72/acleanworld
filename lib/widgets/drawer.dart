@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../homePage.dart';
 import '../settings.dart';
+import '../signInPage.dart';
 
 Widget _buildMenuItem(
     BuildContext context, Widget title, String routeName, String currentRoute, IconData icon) {
@@ -53,6 +54,7 @@ Drawer buildDrawer(BuildContext context, String currentRoute)
           ),          
           child: Text('Menu', style:  TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: Colors.white)),          
         ),),
+        _buildMenuItem(context,const Text('Log ind',style: TextStyle(fontSize: 18.0)), signInPage.route, currentRoute, Icons.login),
         _buildMenuItem(context,const Text('Kort',style: TextStyle(fontSize: 18.0)), homePage.route, currentRoute, Icons.home),
         _buildMenuItem(context,const Text('Indstillinger',style: TextStyle(fontSize: 18.0)), settings.route, currentRoute, Icons.settings),        
       ],

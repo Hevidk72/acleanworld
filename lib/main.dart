@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'Splash.dart';
 import 'homePage.dart';
 import 'settings.dart';
+import 'signInPage.dart';
 
 void main() 
 {
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget
       home: const Splash(),
       routes: <String, WidgetBuilder>
       {
+        signInPage.route: (context) => const signInPage(),
         homePage.route: (context) => const homePage(),
         settings.route: (context) => const settings()
       }
