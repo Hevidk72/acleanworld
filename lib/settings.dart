@@ -25,16 +25,7 @@ class _settingsState extends State<settings> {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     //WidgetsFlutterBinding.ensureInitialized();
-    initSPHelper().whenComplete(() 
-    {
-      print("SPHELPER init");   
-      print("useremail: ${SPHelper.sp.get("useremail")}");
-      print("userpassword: ${SPHelper.sp.get("userpassword")}");
-    });
    
-    _emailController.text=SPHelper.sp.get("useremail") ?? "";
-    _passwordController.text=SPHelper.sp.get("userpassword") ?? "";
-    //print("Password: $b_");
     
   }
 
@@ -49,7 +40,7 @@ class _settingsState extends State<settings> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Indstillinger ${SPHelper.sp.get("useremail")}"),
+        title: Text("Indstillinger "),
       ),
       drawer: buildDrawer(context, settings.route),
       body: Center(
@@ -95,8 +86,8 @@ class _settingsState extends State<settings> {
                     _formKey.currentState!.save();
                     print(_emailController.text);
                     print(_passwordController.text);   
-                    SPHelper.sp.save("useremail",_emailController.text);    
-                    SPHelper.sp.save("userpassword",_passwordController.text);    
+                   // SPHelper.sp.save("useremail",_emailController.text);    
+                   // SPHelper.sp.save("userpassword",_passwordController.text);    
 
                   }
                 },

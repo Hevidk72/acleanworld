@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 class trip {
   double lat;
@@ -40,32 +40,3 @@ Future showAlert(BuildContext context, String messageText, int delayed) async
   );
 }
 
-//Shared Preferences
-
-  Future<void> initSPHelper()  async 
-  {
-    await SPHelper.sp.initSharedPreferences();
-    await Future.delayed(const Duration(milliseconds: 3000));
-  }
-
-class SPHelper {
-  SPHelper._();
-  static SPHelper sp = SPHelper._();
-  SharedPreferences? prefs;
-
-  Future<void> initSharedPreferences() async {
-    prefs = await SharedPreferences.getInstance();
-  }
-
-  Future<void> save(String name, String value) async {
-    await prefs?.setString(name, value);
-  }
-
-  String? get(String key) {
-    return prefs?.getString(key) ?? "";
-  }
-
-  Future<bool> delete(String key) async {
-    return await prefs!.remove(key);
-  }
-}

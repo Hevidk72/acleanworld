@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:supabase/supabase.dart';
 //Custom utils
 import 'package:acleanworld/widgets/drawer.dart';
-import 'package:acleanworld/utils/utils.dart';
+import 'globals.dart' as globals;
 
 class signInPage extends StatefulWidget {
   static const String route = "/signInPage";
@@ -13,275 +12,245 @@ class signInPage extends StatefulWidget {
 }
 
 class _signInPageState extends State<signInPage> {
-  // Database init
-  static const supabaseUrl = 'https://zbqoritnaqhkridbyaxc.supabase.co';
-  static const supabaseKey =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpicW9yaXRuYXFoa3JpZGJ5YXhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Njg2MzI0NDEsImV4cCI6MTk4NDIwODQ0MX0.NO3SvLCPEmXMFIVFiHBYV9ZLp0o2IFgndMzpkwQG_F0';
-  final dataBase = SupabaseClient(supabaseUrl, supabaseKey);
-  // Global
-  bool rememberMe = false;
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passWordController = TextEditingController();
-
+  
   @override
-  initState() {
+  void initState() {
+    _getAuth();
     super.initState();
-    initSPHelper().whenComplete(() {
-      print("SPHELPER init");
-      print("useremail: ${SPHelper.sp.get("useremail")}");
-      print("userpassword: ${SPHelper.sp.get("userpassword")}");
-      _emailController.text = SPHelper.sp.get("useremail")!;
-      _passWordController.text = SPHelper.sp.get("userpassword")!;
+  }
+
+  Future<void> _getAuth() async {
+    setState(() {
+      globals.gUser = globals.dataBase.auth.currentUser;
+    });
+    globals.dataBase.auth.onAuthStateChange.listen((data) {
+      setState(() {
+        globals.gUser = data.session?.user;
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('A Cleaner World Login')),
-      drawer: buildDrawer(context, signInPage.route),
-      backgroundColor: Colors.blue,      
-      body: Align(
-        alignment: Alignment.center,
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "Sign Up",
-                  textAlign: TextAlign.start,
-                  overflow: TextOverflow.clip,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                    fontSize: 24,
-                    color: Color(0xffffffff),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(0, 50, 0, 16),
-                  child: TextField(
-                    controller: TextEditingController(),
-                    obscureText: false,
-                    textAlign: TextAlign.start,
-                    maxLines: 1,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      fontSize: 14,
-                      color: Color(0xff000000),
-                    ),
-                    decoration: InputDecoration(
-                      disabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(22.0),
-                        borderSide:
-                            BorderSide(color: Color(0x00ffffff), width: 1),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(22.0),
-                        borderSide:
-                            BorderSide(color: Color(0x00ffffff), width: 1),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(22.0),
-                        borderSide:
-                            BorderSide(color: Color(0x00ffffff), width: 1),
-                      ),
-                      hintText: "Name",
-                      hintStyle: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.normal,
-                        fontSize: 14,
-                        color: Color(0xff000000),
-                      ),
-                      filled: true,
-                      fillColor: Color(0xfff2f2f3),
-                      isDense: false,
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                      prefixIcon: Icon(Icons.person,
-                          color: Color(0xff3a57e8), size: 24),
-                    ),
-                  ),
-                ),
-                TextField(
-                  controller: TextEditingController(),
-                  obscureText: false,
-                  textAlign: TextAlign.start,
-                  maxLines: 1,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                    fontSize: 14,
-                    color: Color(0xff000000),
-                  ),
-                  decoration: InputDecoration(
-                    disabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(22.0),
-                      borderSide:
-                          BorderSide(color: Color(0x00ffffff), width: 1),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(22.0),
-                      borderSide:
-                          BorderSide(color: Color(0x00ffffff), width: 1),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(22.0),
-                      borderSide:
-                          BorderSide(color: Color(0x00ffffff), width: 1),
-                    ),
-                    hintText: "Email",
-                    hintStyle: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      fontSize: 14,
-                      color: Color(0xff000000),
-                    ),
-                    filled: true,
-                    fillColor: Color(0xfff2f2f3),
-                    isDense: false,
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                    prefixIcon:
-                        Icon(Icons.mail, color: Color(0xff3a57e8), size: 24),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(0, 16, 0, 30),
-                  child: TextField(
-                    controller: TextEditingController(),
-                    obscureText: true,
-                    textAlign: TextAlign.start,
-                    maxLines: 1,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      fontSize: 14,
-                      color: Color(0xff000000),
-                    ),
-                    decoration: InputDecoration(
-                      disabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(22.0),
-                        borderSide:
-                            BorderSide(color: Color(0x00ffffff), width: 1),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(22.0),
-                        borderSide:
-                            BorderSide(color: Color(0x00ffffff), width: 1),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(22.0),
-                        borderSide:
-                            BorderSide(color: Color(0x00ffffff), width: 1),
-                      ),
-                      hintText: "Password",
-                      hintStyle: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.normal,
-                        fontSize: 14,
-                        color: Color(0xff000000),
-                      ),
-                      filled: true,
-                      fillColor: Color(0xfff2f2f3),
-                      isDense: false,
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                      prefixIcon:
-                          Icon(Icons.lock, color: Color(0xff3a57e8), size: 24),
-                      suffixIcon: Icon(Icons.visibility,
-                          color: Color(0xff97989a), size: 24),
-                    ),
-                  ),
-                ),
-                MaterialButton(
-                  onPressed: () {},
-                  color: Color(0xffffd261),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(22.0),
-                  ),
-                  padding: EdgeInsets.all(16),
-                  child: Text(
-                    "Create Account",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      fontStyle: FontStyle.normal,
-                    ),
-                  ),
-                  textColor: Color(0xff4d4d4d),
-                  height: 50,
-                  minWidth: MediaQuery.of(context).size.width,
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        "Already have an account?",
-                        textAlign: TextAlign.start,
-                        overflow: TextOverflow.clip,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.normal,
-                          fontSize: 14,
-                          color: Color(0xffe2dcdc),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
-                        child: Text(
-                          "SignIn",
-                          textAlign: TextAlign.start,
-                          overflow: TextOverflow.clip,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontStyle: FontStyle.normal,
-                            fontSize: 14,
-                            color: Color(0xffffffff),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                 Checkbox(
-                  onChanged: (value) {},
-                  activeColor: Color(0xff3a57e8),
-                  autofocus: false,
-                  checkColor: Color(0xffffffff),
-                  hoverColor: Color(0x42000000),
-                  splashRadius: 20,
-                  value: true,
-                ),
-                Text(
-                  "Husk mig!",
-                  textAlign: TextAlign.start,
-                  overflow: TextOverflow.clip,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                    fontSize: 14,
-                    color: Color(0xff000000),
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
+      appBar: AppBar(title: Text('Log ind'),), 
+      body: globals.gUser == null ? const _LoginForm() :  const _ProfileForm(),
     );
   }
+}
 
+class _LoginForm extends StatefulWidget {
+  const _LoginForm({Key? key}) : super(key: key);
+
+  @override
+  State<_LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<_LoginForm> {
+  bool _loading = false;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _loading
+        ? const Center(child: CircularProgressIndicator())
+        : ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            children: [
+              TextFormField(
+                keyboardType: TextInputType.emailAddress,
+                controller: _emailController,
+                decoration: const InputDecoration(label: Text('Email',)),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(   
+                
+                obscureText: true,
+                controller: _passwordController,
+                decoration: InputDecoration(prefixIcon: const Icon(Icons.person),
+                                                  prefixIconColor: Colors.blue,
+                                                  hintText: "Password", hintStyle: TextStyle(color: Colors.black.withOpacity(0.3))
+                                           ,enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0),
+                                                                                  borderSide: const BorderSide(color: Colors.blue),
+                                                                                 )),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () async {
+                  setState(() {
+                    _loading = true;
+                  });
+                  try {
+                    final email = _emailController.text;
+                    final password = _passwordController.text;
+                    await globals.dataBase.auth.signInWithPassword(email: email,password: password,);
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("Log ind er OK!"),
+                      backgroundColor: Colors.green,
+                    ));
+                    // Save Verified credentials
+                    globals.SPHelper.sp.save("useremail", email);
+                    globals.SPHelper.sp.save("userpassword", password);
+                  } catch (e) {                                      
+                    
+                    ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+                      content: Text("Log ind fej! : $e"),
+                      backgroundColor: Colors.red,
+                    ));
+                    setState(() {
+                      _loading = false;
+                    });
+                  }
+                },
+                child: const Text('Log ind'),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () async {
+                  setState(() {
+                    _loading = true;
+                  });
+                  try {
+                    final email = _emailController.text;
+                    final password = _passwordController.text;
+                    await globals.dataBase.auth.signUp( email: email, password: password, );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Signup failed! : $e'),
+                      backgroundColor: Colors.red,
+                    ));
+                    setState(() {
+                      _loading = false;
+                    });
+                  }
+                },
+                child: const Text('Opret ny bruger'),
+              ),
+            ],
+          );
+  }
+}
+
+class _ProfileForm extends StatefulWidget {
+  const _ProfileForm({Key? key}) : super(key: key);
+
+  @override
+  State<_ProfileForm> createState() => _ProfileFormState();
+}
+
+class _ProfileFormState extends State<_ProfileForm> {
+  var _loading = true;
+  final _usernameController = TextEditingController();
+  final _fullNameController = TextEditingController();
+
+  @override
+  void initState() {
+    _loadProfile();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _fullNameController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadProfile() async {
+    try {
+      final userId = globals.dataBase.auth.currentUser!.id;
+      final data = (await globals.dataBase
+          .from('profiles_tab')
+          .select()
+          .match({'id': userId}).maybeSingle()) as Map?;
+      if (data != null) {
+        setState(() {
+          _usernameController.text = data['username'];
+          _fullNameController.text = data['full_name'];
+        });
+      }
+    } catch (e) {
+      print("Fejl ved hentning af profil : $e");
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Fejl ved hentning af profil : $e'),
+        backgroundColor: Colors.red,
+      ));
+    }
+    setState(() {
+      _loading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _loading
+        ? const Center(child: CircularProgressIndicator())
+        : ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            children: [
+              TextFormField(
+                controller: _usernameController,
+                decoration: const InputDecoration(
+                  label: Text('Username'),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _fullNameController,
+                decoration: const InputDecoration(
+                  label: Text('Fulde Navn'),
+                ),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                  onPressed: () async {
+                    try {
+                      setState(() {
+                        _loading = true;
+                      });
+                      final userId = globals.dataBase.auth.currentUser!.id;
+                      final username = _usernameController.text;
+                      final fullName = _fullNameController.text;
+                      await globals.dataBase.from('profiles_tab').upsert({
+                        'id': userId,
+                        'username': username,
+                        'full_name': fullName,
+                      });
+                      if (mounted) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text('Din profil er gemt'),
+                          backgroundColor: Colors.green,
+                        ));
+                      }
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text('Fejl ved gem profil : $e'),
+                        backgroundColor: Colors.red,
+                      ));
+                    }
+                    setState(() {
+                      _loading = false;
+                    });
+                  },
+                  child: const Text('Gem')),
+              const SizedBox(height: 16),
+              TextButton(
+                  onPressed: () => globals.dataBase.auth.signOut(),
+                  child: const Text('Log Ud')),
+            ],
+          );
+  }
+
+/*
   Future<void> login() async {
     final AuthResponse res;
     try {
@@ -316,9 +285,8 @@ class _signInPageState extends State<signInPage> {
     );
   */
   }
-
-  void toggleRememberMe() {}
-
+*/
+  
   /*
       body: Align(
         alignment: Alignment.center, widthFactor: 3, child:

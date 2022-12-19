@@ -11,6 +11,7 @@ import 'package:supabase/supabase.dart';
 //Custom utils
 import 'package:acleanworld/widgets/drawer.dart';
 import 'package:acleanworld/utils/utils.dart';
+import 'globals.dart' as globals;
 
 bool debug = true;
 
@@ -46,12 +47,6 @@ class _HomePageState extends State<homePage> {
   late TextEditingController _descriptionController = TextEditingController();
   late TextEditingController _kgController = TextEditingController();
 
-  // Database init
-  static const supabaseUrl = 'https://zbqoritnaqhkridbyaxc.supabase.co';
-  static const supabaseKey =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpicW9yaXRuYXFoa3JpZGJ5YXhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Njg2MzI0NDEsImV4cCI6MTk4NDIwODQ0MX0.NO3SvLCPEmXMFIVFiHBYV9ZLp0o2IFgndMzpkwQG_F0';
-  final dataBase = SupabaseClient(supabaseUrl, supabaseKey);
-
   /*
   late Future<List<Polyline>> polylines;
   Future<List<Polyline>> getPolylines() async {
@@ -74,16 +69,7 @@ class _HomePageState extends State<homePage> {
   initState() {
     super.initState();
     _mapController = MapController();
-    initLocationService();
-    if (debug) debugPrint("Supabase.test query");
-    // query data
-    final data = dataBase
-        .from('users_tab')
-        .select()
-        .order('first_name', ascending: true);
-    debugPrint("SQL Query: ${data.csv().toString()}");
-
-    //showAlert(context, "Ready to Rock and Roll!", 0);
+    initLocationService();    
   }
 
   void initLocationService() async {
@@ -175,7 +161,14 @@ class _HomePageState extends State<homePage> {
     ];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('A Cleaner World')),
+      appBar: AppBar(title: const Text('A Cleaner World',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28.0)), 
+                     centerTitle: true, 
+                     actions: <Widget>[
+                                        Text(globals.gUser?.email ?? "",
+                                             style: const TextStyle(color: Colors.amber,
+                                             fontSize: 12),
+                                        ), 
+                                      ]),  
       drawer: buildDrawer(context, homePage.route),
       body: Padding(
         padding: const EdgeInsets.all(2),
@@ -184,9 +177,9 @@ class _HomePageState extends State<homePage> {
             Padding(
               padding: const EdgeInsets.only(top: 0, bottom: 8),
               child: _serviceError!.isEmpty
-                  ? Text('Din position: (${currentLatLng.latitude}, ${currentLatLng.longitude}) and Zoom=$_currentZoom') 
+                  ? Text('Din position: (${currentLatLng.latitude}, ${currentLatLng.longitude}) og Zoom=$_currentZoom') 
                   //Text('This is a map that is showing (${currentLatLng.latitude}, ${currentLatLng.longitude}) and zoom=${_mapController.zoom}.')
-                  : Text('Error occured while acquiring location. Error Message : $_serviceError'),
+                  : Text('Fejl ved at finde din lokation. Fejl Besked : $_serviceError'),
             ),
             Flexible(
               child: FlutterMap(
@@ -306,10 +299,10 @@ class _HomePageState extends State<homePage> {
     if (debug) debugPrint(jsonTrip);
     // Add trip to cloud database:
     stopTime_ = DateTime.now();
-    var data = await dataBase.from('trips_tab').insert
+    var data = await globals.dataBase.from('trips_tab').insert
     (
       {
-      "user_id": "HEVI",
+      "user_id": globals.gUser?.id,
       "trip_data": jsonTrip,
       "litter_collected": _kgController.text,
       "description": _descriptionController.text,

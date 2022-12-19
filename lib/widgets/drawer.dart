@@ -4,12 +4,12 @@ import '../settings.dart';
 import '../signInPage.dart';
 
 Widget _buildMenuItem(
-    BuildContext context, Widget title, String routeName, String currentRoute, IconData icon) {
+    BuildContext context, String title, String subtitle, String routeName, String currentRoute, IconData icon) {
   final isSelected = routeName == currentRoute;
 
   return ListTile(
-    title: title,
-    subtitle: const Text("Hello"),
+    title: Text(title,style: const TextStyle(fontSize: 18.0)),
+    subtitle: Text(subtitle),
     leading: Icon(icon),
     selected: isSelected,
     onTap: () {
@@ -54,9 +54,10 @@ Drawer buildDrawer(BuildContext context, String currentRoute)
           ),          
           child: Text('Menu', style:  TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: Colors.white)),          
         ),),
-        _buildMenuItem(context,const Text('Log ind',style: TextStyle(fontSize: 18.0)), signInPage.route, currentRoute, Icons.login),
-        _buildMenuItem(context,const Text('Kort',style: TextStyle(fontSize: 18.0)), homePage.route, currentRoute, Icons.home),
-        _buildMenuItem(context,const Text('Indstillinger',style: TextStyle(fontSize: 18.0)), settings.route, currentRoute, Icons.settings),        
+        _buildMenuItem(context,'Kort', 'Ny tur', homePage.route, currentRoute, Icons.map),
+        _buildMenuItem(context,'Kort', 'Historik', homePage.route, currentRoute, Icons.map_outlined),
+        _buildMenuItem(context,'Indstillinger', '', settings.route, currentRoute, Icons.settings),        
+        _buildMenuItem(context,'Log ud', '',signInPage.route, currentRoute, Icons.login),
       ],
     ),  
   );
