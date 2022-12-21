@@ -35,7 +35,11 @@ class _SplashState extends State<Splash> {
       globals.gbisLoggedIn = true;
       globals.dataBase.auth.onAuthStateChange.listen((data) {
       globals.gUser = data.session?.user;
-      print("gUser.email=${globals.gUser?.email}");     
+      print("gUser.email=${globals.gUser?.email}");   
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("Automatisk login med gemte data!"),
+                      backgroundColor: Colors.green,
+                    ));  
     });    
     }
     catch (e) 

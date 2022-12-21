@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-//Custom utils
-import 'package:acleanworld/widgets/drawer.dart';
+import 'HomePage.dart';
 import 'globals.dart' as globals;
 
 class signInPage extends StatefulWidget {
@@ -12,7 +11,6 @@ class signInPage extends StatefulWidget {
 }
 
 class _signInPageState extends State<signInPage> {
-  
   @override
   void initState() {
     _getAuth();
@@ -33,8 +31,10 @@ class _signInPageState extends State<signInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Log ind'),), 
-      body: globals.gUser == null ? const _LoginForm() :  const _ProfileForm(),
+      appBar: AppBar(
+        title: Text('Log ind'),
+      ),
+      body: globals.gUser == null ? const _LoginForm() : const _ProfileForm(),
     );
   }
 }
@@ -50,7 +50,7 @@ class _LoginFormState extends State<_LoginForm> {
   bool _loading = false;
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -68,19 +68,24 @@ class _LoginFormState extends State<_LoginForm> {
               TextFormField(
                 keyboardType: TextInputType.emailAddress,
                 controller: _emailController,
-                decoration: const InputDecoration(label: Text('Email',)),
+                decoration: const InputDecoration(
+                    label: Text(
+                  'Email',
+                )),
               ),
               const SizedBox(height: 16),
-              TextFormField(   
-                
+              TextFormField(
                 obscureText: true,
                 controller: _passwordController,
-                decoration: InputDecoration(prefixIcon: const Icon(Icons.person),
-                                                  prefixIconColor: Colors.blue,
-                                                  hintText: "Password", hintStyle: TextStyle(color: Colors.black.withOpacity(0.3))
-                                           ,enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0),
-                                                                                  borderSide: const BorderSide(color: Colors.blue),
-                                                                                 )),
+                decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.person),
+                    prefixIconColor: Colors.blue,
+                    hintText: "Password",
+                    hintStyle: TextStyle(color: Colors.black.withOpacity(0.3)),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: const BorderSide(color: Colors.blue),
+                    )),
               ),
               const SizedBox(height: 16),
               ElevatedButton(
@@ -91,7 +96,10 @@ class _LoginFormState extends State<_LoginForm> {
                   try {
                     final email = _emailController.text;
                     final password = _passwordController.text;
-                    await globals.dataBase.auth.signInWithPassword(email: email,password: password,);
+                    await globals.dataBase.auth.signInWithPassword(
+                      email: email,
+                      password: password,
+                    );
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       content: Text("Log ind er OK!"),
                       backgroundColor: Colors.green,
@@ -99,9 +107,9 @@ class _LoginFormState extends State<_LoginForm> {
                     // Save Verified credentials
                     globals.SPHelper.sp.save("useremail", email);
                     globals.SPHelper.sp.save("userpassword", password);
-                  } catch (e) {                                      
-                    
-                    ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+                    Navigator.popAndPushNamed(context, homePage.route);
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text("Log ind fej! : $e"),
                       backgroundColor: Colors.red,
                     ));
@@ -121,7 +129,10 @@ class _LoginFormState extends State<_LoginForm> {
                   try {
                     final email = _emailController.text;
                     final password = _passwordController.text;
-                    await globals.dataBase.auth.signUp( email: email, password: password, );
+                    await globals.dataBase.auth.signUp(
+                      email: email,
+                      password: password,
+                    );
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text('Signup failed! : $e'),
@@ -223,6 +234,7 @@ class _ProfileFormState extends State<_ProfileForm> {
                         'id': userId,
                         'username': username,
                         'full_name': fullName,
+                        'updated_at': DateTime.now().toIso8601String()
                       });
                       if (mounted) {
                         ScaffoldMessenger.of(context)
@@ -286,7 +298,7 @@ class _ProfileFormState extends State<_ProfileForm> {
   */
   }
 */
-  
+
   /*
       body: Align(
         alignment: Alignment.center, widthFactor: 3, child:
