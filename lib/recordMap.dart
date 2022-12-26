@@ -16,18 +16,18 @@ import 'globals.dart' as globals;
 bool debug = true;
 
 Future<void> main() async {
-  runApp(const homePage());
+  runApp(const RecordMap());
 }
 
-class homePage extends StatefulWidget {
-  static const String route = "/homePage";
-  const homePage({Key? key}) : super(key: key);
+class RecordMap extends StatefulWidget {
+  static const String route = "/RecordMap";
+  const RecordMap({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _RecordMapState createState() => _RecordMapState();
 }
 
-class _HomePageState extends State<homePage> {
+class _RecordMapState extends State<RecordMap> {
   LocationData? _currentLocation;
   double _currentZoom = 0;
   late final MapController _mapController;
@@ -44,8 +44,8 @@ class _HomePageState extends State<homePage> {
   late DateTime startTime_;
   late DateTime stopTime_;
   String description_ = "A nice day to collect litter";
-  late TextEditingController _descriptionController = TextEditingController();
-  late TextEditingController _kgController = TextEditingController();
+  late final TextEditingController _descriptionController = TextEditingController();
+  late final TextEditingController _kgController = TextEditingController();
 
   /*
   late Future<List<Polyline>> polylines;
@@ -160,7 +160,11 @@ class _HomePageState extends State<homePage> {
       ),
     ];
 
-    return Scaffold(
+   return WillPopScope(
+        onWillPop: () async {
+          return globals.onWillPop(context);
+        },
+        child: Scaffold(
       appBar: AppBar(title: const Text('A Cleaner World',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28.0)), 
                      centerTitle: true, 
                      actions: <Widget>[
@@ -169,7 +173,7 @@ class _HomePageState extends State<homePage> {
                                              fontSize: 12),
                                         ), 
                                       ]),  
-      drawer: buildDrawer(context, homePage.route),
+      drawer: buildDrawer(context, RecordMap.route),
       body: Padding(
         padding: const EdgeInsets.all(2),
         child: Column(
@@ -260,7 +264,8 @@ class _HomePageState extends State<homePage> {
               : const Icon(Icons.play_arrow),
         );
       }),
-    );
+    )
+   );
   }
 
   // End Trip

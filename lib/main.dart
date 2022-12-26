@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'Splash.dart';
-import 'homePage.dart';
+import 'recordMap.dart';
 import 'settings.dart';
 import 'signInPage.dart';
 import 'globals.dart' as globals;

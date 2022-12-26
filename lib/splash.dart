@@ -1,5 +1,5 @@
-import 'package:acleanworld/homePage.dart';
-import 'package:acleanworld/signInPage.dart';
+import 'recordMap.dart';
+import 'signInPage.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'globals.dart' as globals;

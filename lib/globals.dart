@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:supabase/supabase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -40,4 +42,29 @@ class SPHelper {
   Future<bool> delete(String key) async {
     return await prefs!.remove(key);
   }
+}
+
+// Handle Back nutton
+Future<bool> onWillPop(context) async {
+  return (await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Are you sure?'),
+          content: const Text('Do you want to exit?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('No'),
+            ),
+            TextButton(
+              //onPressed: () { Navigator.of(context).pop(true);},
+              onPressed: () {
+                SystemNavigator.pop();
+              },
+              child: const Text('Yes'),
+            ),
+          ],
+        ),
+      )) ??
+      false;
 }
