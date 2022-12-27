@@ -3,9 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:supabase/supabase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+bool bDebug = true;
 bool gbisLoggedIn = false;
 String gsUserName = "";
 String gsPassword = "";
+double MaxZoom = 18.49;
 
 // Database init
   const supabaseUrl = 'https://zbqoritnaqhkridbyaxc.supabase.co';
@@ -49,19 +51,19 @@ Future<bool> onWillPop(context) async {
   return (await showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Are you sure?'),
-          content: const Text('Do you want to exit?'),
+          title: const Text("Er du sikker ?"),
+          content: const Text("Vil du afslutte denne App?"),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('No'),
+              child: const Text('Nej'),
             ),
             TextButton(
               //onPressed: () { Navigator.of(context).pop(true);},
               onPressed: () {
                 SystemNavigator.pop();
               },
-              child: const Text('Yes'),
+              child: const Text('Ja'),
             ),
           ],
         ),

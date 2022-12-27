@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'HomePage.dart';
-import 'globals.dart' as globals;
+import 'RecordMap.dart';
+import 'Globals.dart' as globals;
 
-class signInPage extends StatefulWidget {
-  static const String route = "/signInPage";
-  const signInPage({Key? key}) : super(key: key);
+class SignInPage extends StatefulWidget {
+  static const String route = "/SignInPage";
+  const SignInPage({Key? key}) : super(key: key);
 
   @override
-  _signInPageState createState() => _signInPageState();
+  _SignInPageState createState() => _SignInPageState();
 }
 
-class _signInPageState extends State<signInPage> {
+class _SignInPageState extends State<SignInPage> {
   @override
   void initState() {
     _getAuth();
@@ -112,7 +112,7 @@ class _LoginFormState extends State<_LoginForm> {
                     // Save Verified credentials
                     globals.SPHelper.sp.save("useremail", email);
                     globals.SPHelper.sp.save("userpassword", password);
-                    Navigator.popAndPushNamed(context, homePage.route);
+                    Navigator.popAndPushNamed(context, RecordMap.route);
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text("Log ind fej! : $e"),

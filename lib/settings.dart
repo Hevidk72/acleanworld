@@ -1,36 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:acleanworld/widgets/drawer.dart';
-import './utils/utils.dart';
+import './widgets/Drawer.dart';
+import 'Globals.dart' as globals;
+
+bool debug = globals.bDebug;
 
 void main() async {
-  runApp(settings());
+  runApp(const Settings());
 }
 
-class settings extends StatefulWidget {
+class Settings extends StatefulWidget {
   static const String route = '/Settings';
-  const settings({Key? key}) : super(key: key);
+  const Settings({Key? key}) : super(key: key);
 
   @override
-  State<settings> createState() => _settingsState();
+  State<Settings> createState() => _SettingsState();
 }
 
-class _settingsState extends State<settings> {
+class _SettingsState extends State<Settings> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
   
   @override
-  void initState() {
+  void initState() 
+  {
     super.initState();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     //WidgetsFlutterBinding.ensureInitialized();
-   
-    
   }
 
   @override
-  void dispose() {
+  void dispose() 
+  {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -40,9 +42,9 @@ class _settingsState extends State<settings> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Indstillinger "),
+        title: const Text("Indstillinger "),
       ),
-      drawer: buildDrawer(context, settings.route),
+      drawer: buildDrawer(context, Settings.route),
       body: Center(
         child: Form(
           key: _formKey,
@@ -84,11 +86,10 @@ class _settingsState extends State<settings> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-                    print(_emailController.text);
-                    print(_passwordController.text);   
-                   // SPHelper.sp.save("useremail",_emailController.text);    
-                   // SPHelper.sp.save("userpassword",_passwordController.text);    
-
+                    if (debug) print(_emailController.text);
+                    if (debug) print(_passwordController.text);   
+                    globals.SPHelper.sp.save("useremail",_emailController.text);    
+                    globals.SPHelper.sp.save("userpassword",_passwordController.text);    
                   }
                 },
                 child: const Text('Save'),

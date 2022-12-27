@@ -1,8 +1,8 @@
-import 'recordMap.dart';
-import 'signInPage.dart';
+import 'RecordMap.dart';
+import 'SignInPage.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'globals.dart' as globals;
+import 'Globals.dart' as globals;
 
 class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);
@@ -51,11 +51,11 @@ class _SplashState extends State<Splash> {
     
   if (globals.gbisLoggedIn) 
   {
-    Navigator.pushNamed(context, homePage.route);
+    Navigator.pushNamed(context, RecordMap.route);
   } 
   else 
   {
-    Navigator.pushNamed(context, signInPage.route);
+    Navigator.pushNamed(context, SignInPage.route);
   }   
   }
 
@@ -76,8 +76,7 @@ class _SplashState extends State<Splash> {
                 child: Container(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
+                    children: const <Widget>[ Text(
                         "A Cleaner World",
                         style: TextStyle(
                             color: Colors.white,
@@ -101,8 +100,8 @@ class _SplashState extends State<Splash> {
                 flex: 2,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    CircularProgressIndicator(color: Colors.white),
+                  children: const <Widget>[
+                    CircularProgressIndicator(color: Colors.white), 
                     Padding(
                       padding: EdgeInsets.only(top: 20.0),
                     ),

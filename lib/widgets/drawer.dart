@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../recordMap.dart';
-import '../settings.dart';
-import '../signInPage.dart';
+import '../RecordMap.dart';
+import '../HistoryMap.dart';
+import '../Settings.dart';
+import '../SignInPage.dart';
 
 Widget _buildMenuItem(
     BuildContext context, String title, String subtitle, String routeName, String currentRoute, IconData icon) {
@@ -54,10 +55,10 @@ Drawer buildDrawer(BuildContext context, String currentRoute)
           ),          
           child: Text('Menu', style:  TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: Colors.white)),          
         ),),
-        _buildMenuItem(context,'Kort', 'Ny tur', homePage.route, currentRoute, Icons.map),
-        _buildMenuItem(context,'Kort', 'Historik', homePage.route, currentRoute, Icons.map_outlined),
-        _buildMenuItem(context,'Indstillinger', '', settings.route, currentRoute, Icons.settings),        
-        _buildMenuItem(context,'Log ud', '',signInPage.route, currentRoute, Icons.login),
+        _buildMenuItem(context,'Kort', 'Ny tur', RecordMap.route, currentRoute, Icons.map),
+        _buildMenuItem(context,'Kort', 'Historik', HistoryMap.route, currentRoute, Icons.map_outlined),
+        _buildMenuItem(context,'Indstillinger', '', Settings.route, currentRoute, Icons.settings),        
+        _buildMenuItem(context,'Log ud', 'Skift bruger', SignInPage.route, currentRoute, Icons.login),
       ],
     ),  
   );

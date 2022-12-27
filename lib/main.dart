@@ -1,9 +1,12 @@
+import 'package:acleanworld/HistoryMap.dart';
 import 'package:flutter/material.dart';
 import 'Splash.dart';
-import 'recordMap.dart';
-import 'settings.dart';
-import 'signInPage.dart';
-import 'globals.dart' as globals;
+import 'RecordMap.dart';
+import 'Settings.dart';
+import 'SignInPage.dart';
+import 'Globals.dart' as globals;
+
+bool debug = globals.bDebug;
 
 main() {
   runApp(const MyApp());
@@ -12,6 +15,8 @@ main() {
   globals.initSPHelper().whenComplete(() {
   globals.gsUserName = globals.SPHelper.sp.get("useremail")!;
   globals.gsPassword = globals.SPHelper.sp.get("userpassword")!;
+  if (debug) print("globals.gsUserName=${globals.gsUserName}");
+  if (debug) print("globals.gsPassword=${globals.gsPassword}");
   });
 }
 
@@ -33,9 +38,10 @@ class MyApp extends StatelessWidget {
         // First Screen of our App
         home: const Splash(),
         routes: <String, WidgetBuilder>{
-          signInPage.route: (context) => const signInPage(),
-          homePage.route: (context) => const homePage(),
-          settings.route: (context) => const settings()
+          SignInPage.route: (context) => const SignInPage(),
+          RecordMap.route: (context) => const RecordMap(),
+          HistoryMap.route: (context) => const HistoryMap(),
+          Settings.route: (context) => const Settings()
         });
   }
 }

@@ -5,15 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
-//Database integration  (https://app.supabase.com/projects)
-import 'package:supabase/supabase.dart';
-
 //Custom utils
-import 'package:acleanworld/widgets/drawer.dart';
-import 'package:acleanworld/utils/utils.dart';
+import './widgets/drawer.dart';
+import './utils/utils.dart';
 import 'globals.dart' as globals;
 
-bool debug = true;
+bool debug = globals.bDebug;
 
 Future<void> main() async {
   runApp(const RecordMap());
@@ -47,24 +44,6 @@ class _RecordMapState extends State<RecordMap> {
   late final TextEditingController _descriptionController = TextEditingController();
   late final TextEditingController _kgController = TextEditingController();
 
-  /*
-  late Future<List<Polyline>> polylines;
-  Future<List<Polyline>> getPolylines() async {
-    final polyLines = [
-      Polyline(
-        points: [
-          LatLng(50.5, -0.09),
-          LatLng(51.3498, -6.2603),
-          LatLng(53.8566, 2.3522),
-        ],
-        strokeWidth: 4,
-        color: Color.fromARGB(255, 90, 243, 2),
-      ),
-    ];
-    await Future<void>.delayed(const Duration(seconds: 3));
-    return polyLines;
-  }
-*/
   @override
   initState() {
     super.initState();
@@ -94,19 +73,20 @@ class _RecordMapState extends State<RecordMap> {
             if (mounted) {
               setState(() {
                 _currentLocation = result;
-                //if (debug) debugPrint(" Time / Speed = ${_currentLocation!.time} / ${_currentLocation!.speed}");
+                if (debug) print(" Time / Speed = ${_currentLocation!.time} / ${_currentLocation!.speed}");
 
                 // initial position
-                if (!initialPosition)
+                if (!initialPosition) {
                   _mapController.move(
                       LatLng(_currentLocation!.latitude!,
                           _currentLocation!.longitude!),
-                      18.49);
+                      globals.MaxZoom);
+                }
                 initialPosition = true;
 
                 // If Live Update / Recording trip is enabled, move map center
                 if (_liveUpdate) {
-                  debugPrint("Logging position setting camera to current location");
+                  if (debug) print("Logging position setting camera to current location");
                   _mapController.move(LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!),_mapController.zoom);
 
                   // logging trip data here:
@@ -125,7 +105,7 @@ class _RecordMapState extends State<RecordMap> {
         }
       }
     } on PlatformException catch (e) {
-      debugPrint(e.toString());
+      if (debug) print(e.toString());
       if (e.code == 'PERMISSION_DENIED') {
         _serviceError = e.message;
         showAlert(context, _serviceError!, 1);
@@ -218,7 +198,7 @@ class _RecordMapState extends State<RecordMap> {
               _liveUpdate = !_liveUpdate;
               if (_liveUpdate) 
               {
-                if (debug) debugPrint("Start Button pressed");
+                if (debug) print("Start Button pressed");
                 _mapController.move(LatLng(currentLatLng.latitude, currentLatLng.longitude), 18.49);
                 interActiveFlags = InteractiveFlag.rotate | InteractiveFlag.pinchZoom | InteractiveFlag.doubleTapZoom;
                 // Todo call dialog box to start recording trip in to an array
@@ -232,7 +212,7 @@ class _RecordMapState extends State<RecordMap> {
               } 
               else 
               {
-                if (debug) debugPrint("Stop/resume Button pressed");
+                if (debug) print("Stop/resume Button pressed");
                 _mapController.move(LatLng(currentLatLng.latitude, currentLatLng.longitude), 18.49);
                 interActiveFlags = InteractiveFlag.all;
                 // Todo call dialog box to stop recording current trip or cancel trip. Get notes and kg litter collected and update Database.
@@ -241,21 +221,19 @@ class _RecordMapState extends State<RecordMap> {
                 // Dialog: Do you want to save this trip ?.
                 // Ask for trip litter weight in kg approx.
                 // Calculate trip length in meters
-                if (debug) debugPrint("Before end Dialog");
+                if (debug) print("Before end Dialog");
                 showEndTripDialog(context,"Afslut tur eller fortsæt ?",2);
-                if (debug) debugPrint("After end Dialog");
+                if (debug) print("After end Dialog");
 
                 // Add trip to database and draw current trip on Polyline layer
                 if (debug)
                 {
                   for (var trip in currentTrip) 
                   {
-                    debugPrint("lat is: ${trip.lat} and long is: ${trip.long}");
+                    print("lat is: ${trip.lat} and long is: ${trip.long}");
                     // currpoints.add(LatLng(trip.lat,trip.long));
                   }
-                }
-
-                
+                }                
                 }
             });
           },
@@ -277,11 +255,11 @@ class _RecordMapState extends State<RecordMap> {
     builder: (BuildContext context) {
       return AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-        title: Text(messageText,style: TextStyle(color: Colors.black,fontSize: 18.0)),
+        title: Text(messageText,style: const TextStyle(color: Colors.black,fontSize: 18.0)),
         content: Column(mainAxisAlignment: MainAxisAlignment.center,mainAxisSize: MainAxisSize.min,children: 
         [
-          TextFormField(autofocus: true,decoration: InputDecoration(hintText: "Beskrivelse"),controller: _descriptionController,),
-          TextFormField(decoration: InputDecoration(hintText: "Antal kg samlet?"),controller: _kgController,)       
+          TextFormField(autofocus: true,decoration: const InputDecoration(hintText: "Beskrivelse"),controller: _descriptionController,),
+          TextFormField(decoration: const InputDecoration(hintText: "Antal kg samlet?"),controller: _kgController,)       
         ]
         ),
         actions: <Widget>
@@ -301,10 +279,11 @@ class _RecordMapState extends State<RecordMap> {
   async {
     var currentTripsMap = currentTrip.map((e){return {"lat": e.lat, "long": e.long};}).toList();
     var jsonTrip = jsonEncode(currentTripsMap);
-    if (debug) debugPrint(jsonTrip);
+    if (debug) print(jsonTrip);
     // Add trip to cloud database:
     stopTime_ = DateTime.now();
-    var data = await globals.dataBase.from('trips_tab').insert
+    //var data = 
+    await globals.dataBase.from('trips_tab').insert
     (
       {
       "user_id": globals.gUser?.id,
