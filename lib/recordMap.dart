@@ -239,7 +239,7 @@ class _RecordMapState extends State<RecordMap> {
           },
           child: _liveUpdate
               ? const Icon(Icons.stop_sharp)
-              : const Icon(Icons.play_arrow),
+              : const Icon(Icons.play_arrow),              
         );
       }),
     )
