@@ -45,7 +45,7 @@ class _HistoryMapState extends State<HistoryMap> {
         strokeWidth: 4,
         color: Color.fromARGB(255, 90, 243, 2),
       ),
-    ];    
+    ];
     await Future<void>.delayed(const Duration(seconds: 3));
     return polyLines;
   }
@@ -54,11 +54,12 @@ class _HistoryMapState extends State<HistoryMap> {
   initState() {
     super.initState();
     _mapController = MapController();
-    initLocationService();    
+    initLocationService();
   }
 
   void initLocationService() async {
-    await _locationService.changeSettings(accuracy: LocationAccuracy.high, interval: 1000);
+    await _locationService.changeSettings(
+        accuracy: LocationAccuracy.high, interval: 1000);
 
     LocationData? location;
     bool serviceEnabled;
@@ -79,7 +80,10 @@ class _HistoryMapState extends State<HistoryMap> {
             if (mounted) {
               setState(() {
                 _currentLocation = result;
-                if (debug) print(" Time / Speed = ${_currentLocation!.time} / ${_currentLocation!.speed}");
+                if (debug) {
+                  print(
+                      " Time / Speed = ${_currentLocation!.time} / ${_currentLocation!.speed}");
+                }
 
                 // initial position
                 if (!initialPosition) {
@@ -115,7 +119,6 @@ class _HistoryMapState extends State<HistoryMap> {
 
   @override
   Widget build(BuildContext context) {
-    const _actionTitles = ['Create Post', 'Upload Photo', 'Upload Video'];
     LatLng currentLatLng;
     // Until currentLocation is initially updated, Widget can locate to 0, 0
     // by default or store previous location value to show.
@@ -137,85 +140,128 @@ class _HistoryMapState extends State<HistoryMap> {
       ),
     ];
 
-    void _showAction(BuildContext context, int index) {
-    showDialog<void>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: Text(_actionTitles[index]),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('CLOSE'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+    Future<void> _showAction(BuildContext context, int index) async {
+      int trips_ = 0;
+      switch (index) {
+        case 0:
+          try {
+            final userId = globals.dataBase.auth.currentUser!.id;
+            final data = (await globals.dataBase
+                .from("get_trips")
+                .select("*")
+                .match({'user_id': userId})
+                .order("trip_age_days", ascending: true));
 
-   return WillPopScope(
+            if (data != null) {
+              print(data);
+            }
+          } catch (e) {
+            print("SQL Error : $e");
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Fejl ved hentning af profil : $e'),
+              backgroundColor: Colors.red,
+            ));
+          }
+          print('zero!');
+          break;
+        case 1:
+          print('one!');
+          break;
+        case 2:
+          print('two!');
+          break;
+        default:
+          print('choose a different number!');
+      }
+      showDialog<void>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Text("Viser $trips_ ture"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('CLOSE'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    return WillPopScope(
         onWillPop: () async {
           return globals.onWillPop(context);
         },
         child: Scaffold(
-      appBar: AppBar(title: const Text('A Cleaner World (Historik)',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0)), 
-                     centerTitle: true, 
-                     actions: <Widget>[
-                                        Text(globals.gUser?.email ?? "",
-                                             style: const TextStyle(color: Colors.amber,
-                                             fontSize: 12),
-                                        ), 
-                                      ]),  
-      drawer: buildDrawer(context, HistoryMap.route),
-      body: Padding(
-        padding: const EdgeInsets.all(2),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 0, bottom: 8),
-              child: _serviceError!.isEmpty
-                  ? Text('pos: (${currentLatLng.latitude}, ${currentLatLng.longitude}) og Zoom=$_currentZoom') 
-                  //Text('This is a map that is showing (${currentLatLng.latitude}, ${currentLatLng.longitude}) and zoom=${_mapController.zoom}.')
-                  : Text('Fejl ved at finde din lokation. Fejl Besked : $_serviceError'),
-            ),
-            Flexible(
-              child: FlutterMap(
-                mapController: _mapController,
-                options: MapOptions(
-                  maxZoom: globals.MaxZoom,
-                  center: LatLng(currentLatLng.latitude, currentLatLng.longitude),
-                  interactiveFlags: interActiveFlags,
+          appBar: AppBar(
+              title: const Text('A Cleaner World (Historik)',
+                  style:
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0)),
+              centerTitle: true,
+              actions: <Widget>[
+                Text(
+                  globals.gUser?.email ?? "",
+                  style: const TextStyle(color: Colors.amber, fontSize: 12),
                 ),
-                children: [
-                  TileLayer( urlTemplate:'https://tile.openstreetmap.org/{z}/{x}/{y}.png',  userAgentPackageName: 'dev.fleaflet.flutter_map.example',),
-                  MarkerLayer(markers: markers),
-                 // PolylineLayer(polylines: [ getPolylines() ]),
-                ],
-              ),
+              ]),
+          drawer: buildDrawer(context, HistoryMap.route),
+          body: Padding(
+            padding: const EdgeInsets.all(2),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 0, bottom: 8),
+                  child: _serviceError!.isEmpty
+                      ? Text(
+                          'pos: (${currentLatLng.latitude}, ${currentLatLng.longitude}) og Zoom=$_currentZoom')
+                      //Text('This is a map that is showing (${currentLatLng.latitude}, ${currentLatLng.longitude}) and zoom=${_mapController.zoom}.')
+                      : Text(
+                          'Fejl ved at finde din lokation. Fejl Besked : $_serviceError'),
+                ),
+                Flexible(
+                  child: FlutterMap(
+                    mapController: _mapController,
+                    options: MapOptions(
+                      maxZoom: globals.MaxZoom,
+                      center: LatLng(
+                          currentLatLng.latitude, currentLatLng.longitude),
+                      interactiveFlags: interActiveFlags,
+                    ),
+                    children: [
+                      TileLayer(
+                        urlTemplate:
+                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        userAgentPackageName:
+                            'dev.fleaflet.flutter_map.example',
+                      ),
+                      MarkerLayer(markers: markers),
+                      // PolylineLayer(polylines: [ getPolylines() ]),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-      floatingActionButton: ExpandableFab(
-        distance: 90.0,
-        children: [
-          ActionButton(
-            onPressed: () => _showAction(context, 0),
-            icon: Image.asset("assets/Mine.png"),          
           ),
-          ActionButton(
-            onPressed: () => _showAction(context, 1),
-            icon: Image.asset("assets/Andre.png"),
+          floatingActionButton: ExpandableFab(
+            distance: 90.0,
+            children: [
+              ActionButton(
+                onPressed: () => _showAction(context, 0),
+                //onPressed: () {   },
+                icon: Image.asset("assets/Mine.png"),
+              ),
+              ActionButton(
+                onPressed: () => _showAction(context, 1),
+                icon: Image.asset("assets/Andre.png"),
+              ),
+              ActionButton(
+                onPressed: () => _showAction(context, 2),
+                icon: Image.asset("assets/Alle.png"),
+              ),
+            ],
           ),
-          ActionButton(
-            onPressed: () => _showAction(context, 2),
-            icon:  Image.asset("assets/Alle.png"),
-          ),
-        ],
-      ),
-    )
-   );
+        ));
   }
 }
 
@@ -326,7 +372,7 @@ class _ExpandableFabState extends State<ExpandableFab>
           directionInDegrees: angleInDegrees,
           maxDistance: widget.distance,
           progress: _expandAnimation,
-          child: widget.children[i],          
+          child: widget.children[i],
         ),
       );
     }
@@ -349,7 +395,7 @@ class _ExpandableFabState extends State<ExpandableFab>
           opacity: _open ? 0.0 : 1.0,
           curve: const Interval(0.25, 1.0, curve: Curves.easeInOut),
           duration: const Duration(milliseconds: 250),
-          child: FloatingActionButton(            
+          child: FloatingActionButton(
             onPressed: _toggle,
             child: const Icon(Icons.menu_sharp),
           ),
@@ -426,6 +472,3 @@ class ActionButton extends StatelessWidget {
     );
   }
 }
-
-
-
