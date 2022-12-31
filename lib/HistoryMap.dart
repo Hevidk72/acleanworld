@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -46,7 +45,7 @@ class _HistoryMapState extends State<HistoryMap> {
         strokeWidth: 4,
         color: Color.fromARGB(255, 90, 243, 2),
       ),
-    ];
+    ];    
     await Future<void>.delayed(const Duration(seconds: 3));
     return polyLines;
   }

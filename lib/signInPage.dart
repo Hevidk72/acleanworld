@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import './widgets/Drawer.dart';
 import 'RecordMap.dart';
 import 'Globals.dart' as globals;
 
@@ -32,8 +33,9 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Log ind'),
+        title: Text('Log ind'),        
       ),
+      drawer: buildDrawer(context, SignInPage.route),
       body: globals.gUser == null ? const _LoginForm() : const _ProfileForm(),
     );
   }
@@ -62,7 +64,11 @@ class _LoginFormState extends State<_LoginForm> {
   Widget build(BuildContext context) {
     return _loading
         ? const Center(child: CircularProgressIndicator())
-        : ListView(
+        : WillPopScope(
+            onWillPop: () async {
+              return globals.onWillPop(context);
+            },
+            child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
             children: [
               TextFormField(
@@ -73,10 +79,14 @@ class _LoginFormState extends State<_LoginForm> {
                     prefixIconColor: Colors.blue,
                     hintText: "Email",
                     hintStyle: TextStyle(color: Colors.black.withOpacity(0.3)),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide: const BorderSide(color: Colors.blue),
-                    )),
+                     border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: const BorderSide(color: Colors.blue),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: const BorderSide(color: Colors.blue),
+                      )),
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -87,10 +97,14 @@ class _LoginFormState extends State<_LoginForm> {
                     prefixIconColor: Colors.blue,
                     hintText: "Password",
                     hintStyle: TextStyle(color: Colors.black.withOpacity(0.3)),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide: const BorderSide(color: Colors.blue),
-                    )),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: const BorderSide(color: Colors.blue),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: const BorderSide(color: Colors.blue),
+                      )),
               ),
               const SizedBox(height: 16),
               ElevatedButton(
@@ -123,7 +137,7 @@ class _LoginFormState extends State<_LoginForm> {
                     });
                   }
                 },
-                child: const Text('Log ind'),
+                child: const Text('Log ind',style: TextStyle(fontSize: 30)),
               ),
               const SizedBox(height: 16),
               ElevatedButton(
@@ -148,10 +162,10 @@ class _LoginFormState extends State<_LoginForm> {
                     });
                   }
                 },
-                child: const Text('Opret ny bruger'),
+                child: const Text('Opret ny bruger',style: TextStyle(fontSize: 30)),
               ),
             ],
-          );
+          ));
   }
 }
 
@@ -209,136 +223,82 @@ class _ProfileFormState extends State<_ProfileForm> {
   Widget build(BuildContext context) {
     return _loading
         ? const Center(child: CircularProgressIndicator())
-        : ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-            children: [
-              TextFormField(
-                controller: _usernameController,
-                decoration: const InputDecoration(
-                  label: Text('Username'),
+        : WillPopScope(
+            onWillPop: () async {
+              return globals.onWillPop(context);
+            },
+            child: ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+              children: [
+                TextFormField(
+                  controller: _usernameController,
+                  decoration: InputDecoration(
+                              label: const Text('Username'),
+                              border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                              borderSide: const BorderSide(color: Colors.blue),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: const BorderSide(color: Colors.blue),
+                      ),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _fullNameController,
-                decoration: const InputDecoration(
-                  label: Text('Fulde Navn'),
-                ),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                  onPressed: () async {
-                    try {
-                      setState(() {
-                        _loading = true;
-                      });
-                      final userId = globals.dataBase.auth.currentUser!.id;
-                      final username = _usernameController.text;
-                      final fullName = _fullNameController.text;
-                      await globals.dataBase.from('profiles_tab').upsert({
-                        'id': userId,
-                        'username': username,
-                        'full_name': fullName,
-                        'updated_at': DateTime.now().toIso8601String()
-                      });
-                      if (mounted) {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(const SnackBar(
-                          content: Text('Din profil er gemt'),
-                          backgroundColor: Colors.green,
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _fullNameController,
+                  decoration: InputDecoration(
+                       label: const Text('Fulde Navn'),
+                     border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: const BorderSide(color: Colors.blue),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: const BorderSide(color: Colors.blue),
+                      ),
+                      )
+                  ),
+                
+                const SizedBox(height: 16),
+                ElevatedButton(
+                    onPressed: () async {
+                      try {
+                        setState(() {
+                          _loading = true;
+                        });
+                        final userId = globals.dataBase.auth.currentUser!.id;
+                        final username = _usernameController.text;
+                        final fullName = _fullNameController.text;
+                        await globals.dataBase.from('profiles_tab').upsert({
+                          'id': userId,
+                          'username': username,
+                          'full_name': fullName,
+                          'updated_at': DateTime.now().toIso8601String()
+                        });
+                        if (mounted) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text('Din profil er gemt'),
+                            backgroundColor: Colors.green,
+                          ));
+                        }
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('Fejl ved gem profil : $e'),
+                          backgroundColor: Colors.red,
                         ));
                       }
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text('Fejl ved gem profil : $e'),
-                        backgroundColor: Colors.red,
-                      ));
-                    }
-                    setState(() {
-                      _loading = false;
-                    });
-                  },
-                  child: const Text('Gem')),
-              const SizedBox(height: 16),
-              TextButton(
-                  onPressed: () => globals.dataBase.auth.signOut(),
-                  child: const Text('Log Ud')),
-            ],
-          );
+                      setState(() {
+                        _loading = false;
+                      });
+                    },
+                    child: const Text('Gem',style: TextStyle(fontSize: 30))),
+                const SizedBox(height: 16),
+                TextButton(
+                    onPressed: () => globals.dataBase.auth.signOut(),
+                    child: const Text('Log Ud',style: TextStyle(fontSize: 30))),
+              ],
+            ));
   }
-
-/*
-  Future<void> login() async {
-    final AuthResponse res;
-    try {
-      res = await dataBase.auth.signInWithPassword(
-          email: _emailController.text, password: _passWordController.text);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Login godkendt!',
-            style: TextStyle(
-                color: Colors.greenAccent,
-                backgroundColor: Colors.black,
-                fontSize: 20)),
-      ));
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('$e',
-            style: TextStyle(
-                color: Colors.redAccent,
-                backgroundColor: Colors.black,
-                fontSize: 20)),
-      ));
-    }
-
-    final Session? session = dataBase.auth.currentSession;
-
-    print(session?.toJson());
-    print(session?.user.toJson());
-
-    /*
-    final UserResponse userRes = await dataBase.auth.updateUser
-    (
-    UserAttributes(data: {"phone": "30 32 20 52"} ),
-    );
-  */
-  }
-*/
-
-  /*
-      body: Align(
-        alignment: Alignment.center, widthFactor: 3, child:
-      Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, children:
-        [
-          Container(height: 20),
-          Text("Log ind", style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold)),
-          TextField(controller: _emailController,
-                    autofocus: true,                    
-                    decoration: InputDecoration(hintText: "Email",
-                                                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0),
-                                                                                  borderSide: const BorderSide(color: Colors.blue),
-                                                                                 ),
-                          
-                                                ),                    
-                   ),
-          TextField(controller: _passWordController,
-                    obscureText: true,
-                    decoration: InputDecoration(hintText: "Password",
-                                                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0),
-                                                                                  borderSide: const BorderSide(color: Colors.blue),
-                                                                                 ),
-                                               ),
-                   ),
-          Checkbox(value: rememberMe, onChanged: (value){ toggleRememberMe(); }),
-          Row(mainAxisAlignment: MainAxisAlignment.center,
-          children: 
-          [
-            ElevatedButton(child: const Text("Login"),
-                           onPressed: () { login(); },),            
-          ])
-        ]),         
-        
-        )
-
-  */
-
 }

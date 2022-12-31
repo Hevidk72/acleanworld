@@ -1,7 +1,7 @@
-import 'RecordMap.dart';
-import 'SignInPage.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'RecordMap.dart';
+import 'SignInPage.dart';
 import 'Globals.dart' as globals;
 
 class Splash extends StatefulWidget {
@@ -35,7 +35,9 @@ class _SplashState extends State<Splash> {
       globals.gbisLoggedIn = true;
       globals.dataBase.auth.onAuthStateChange.listen((data) {
       globals.gUser = data.session?.user;
-      print("gUser.email=${globals.gUser?.email}");   
+      if (globals.bDebug) {
+        print("gUser.email=${globals.gUser?.email}");
+      }   
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       content: Text("Automatisk login med gemte data!"),
                       backgroundColor: Colors.green,
@@ -46,7 +48,9 @@ class _SplashState extends State<Splash> {
     {
       globals.gbisLoggedIn = false;
     }    
-    print("Setting global gbisLoggedIn=${globals.gbisLoggedIn}");
+    if (globals.bDebug) {
+      print("Setting global gbisLoggedIn=${globals.gbisLoggedIn}");
+    }
   } 
     
   if (globals.gbisLoggedIn) 
