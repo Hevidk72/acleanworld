@@ -8,7 +8,7 @@ import 'Globals.dart' as globals;
 
 bool debug = globals.bDebug;
 
-main() {
+main() async {
   runApp(const MyApp());
 // Setting Globals
   globals.initSPHelper();
@@ -18,6 +18,7 @@ main() {
   if (debug) print("globals.gsUserName=${globals.gsUserName}");
   if (debug) print("globals.gsPassword=${globals.gsPassword}");
   });
+  
 }
 
 class MyApp extends StatelessWidget {
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+ 
     return MaterialApp(
         // in the below line, we are specifying title of our app.
         title: 'A Cleaner World',

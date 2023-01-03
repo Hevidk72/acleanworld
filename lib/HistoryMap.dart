@@ -146,14 +146,15 @@ class _HistoryMapState extends State<HistoryMap> {
         case 0:
           try {
             final userId = globals.dataBase.auth.currentUser!.id;
-            final data = (await globals.dataBase
+            final data = await globals.dataBase
                 .from("get_trips")
                 .select("*")
                 .match({'user_id': userId})
-                .order("trip_age_days", ascending: true));
+                .order("trip_age_days", ascending: true);
 
             if (data != null) {
               print(data);
+              
             }
           } catch (e) {
             print("SQL Error : $e");

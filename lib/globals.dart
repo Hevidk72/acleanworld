@@ -3,12 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:supabase/supabase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:version_check/version_check.dart';
 
 bool bDebug = true;
 bool gbisLoggedIn = false;
 String gsUserName = "";
 String gsPassword = "";
 double MaxZoom = 18.49;
+
+//Version check
+String? version = '';
+String? storeVersion = '';
+String? storeUrl = '';
+String? packageName = '';
+final versionCheck = VersionCheck(country: 'dk');
 
 // Database init
 const supabaseUrl = 'https://zbqoritnaqhkridbyaxc.supabase.co';
@@ -95,4 +103,47 @@ int clip(num) {
   } else {
     return num;
   }
+}
+
+// Version Check
+Future checkVersion(BuildContext context) async {
+      await versionCheck.checkVersion(context);
+      version = versionCheck.packageVersion;
+      packageName = versionCheck.packageName;
+      storeVersion = versionCheck.storeVersion;
+      storeUrl = versionCheck.storeUrl;         
+  }
+
+  void customShowUpdateDialog(BuildContext context, VersionCheck versionCheck) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => AlertDialog(
+      title: const Text('NEW Update Available'),
+      content: SingleChildScrollView(
+        child: ListBody(
+          children: <Widget>[
+            Text(
+                'Do you REALLY want to update to ${versionCheck.storeVersion}?'),
+            Text('(current version ${versionCheck.packageVersion})'),
+          ],
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: const Text('Update'),
+          onPressed: () async {
+            await versionCheck.launchStore();
+            Navigator.of(context).pop();
+          },
+        ),
+        TextButton(
+          child: const Text('Close'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    ),
+  );
 }

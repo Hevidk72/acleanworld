@@ -31,6 +31,14 @@ class _SettingsState extends State<Settings> {
     _passwordController = TextEditingController();
     _userNameController = TextEditingController();
     _fullNameController = TextEditingController();
+    _emailController.text = globals.gsUserName;
+    _passwordController.text = globals.gsPassword;
+    _userNameController.text = globals.packageName ?? "";
+    _fullNameController.text = globals.gsPassword;
+    if (debug) print("store:${globals.storeVersion ?? "Not Available!"}");
+    if (debug) print("Version:${globals.version}");
+    if (debug) print("PackageName:${globals.packageName}");
+
   }
 
   @override
@@ -109,7 +117,7 @@ class _SettingsState extends State<Settings> {
                       // Save Verified credentials
                       globals.SPHelper.sp.save("useremail", email);
                       globals.SPHelper.sp.save("userpassword", password);
-                      //  Navigator.popAndPushNamed(context, RecordMap.route);
+                      
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text("Log ind fej! : $e"),

@@ -23,7 +23,7 @@ class _SplashState extends State<Splash> {
   
   _navigatetohome() async {
     await Future.delayed(
-      const Duration(milliseconds: 2000),
+      const Duration(milliseconds: 4000),
     );
 
   // check saves login
@@ -65,6 +65,10 @@ class _SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
+    globals.checkVersion(context);
+    if (debug) print("store:${globals.storeVersion ?? "Not Available!"}");
+    if (debug) print("Version:${globals.version}");
+  
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
@@ -104,7 +108,7 @@ class _SplashState extends State<Splash> {
                 flex: 2,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const <Widget>[
+                  children: <Widget>[
                     CircularProgressIndicator(color: Colors.white), 
                     Padding(
                       padding: EdgeInsets.only(top: 20.0),
@@ -117,6 +121,14 @@ class _SplashState extends State<Splash> {
                           fontWeight: FontWeight.bold,
                           fontSize: 18.0,
                           color: Colors.white),
+                    ),
+                    Text("Version:${globals.version}",
+                      softWrap: true,
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14.0,
+                          color: Colors.white70),
                     )
                   ],
                 ),
