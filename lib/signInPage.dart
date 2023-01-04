@@ -33,7 +33,7 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Log ind'),        
+        title: const Text('Log ind'),        
       ),
       drawer: buildDrawer(context, SignInPage.route),
       body: globals.gUser == null ? const _LoginForm() : const _ProfileForm(),
@@ -120,7 +120,7 @@ class _LoginFormState extends State<_LoginForm> {
                       password: password,
                     );
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text("Log ind er OK!"),
+                      content: Text("Log ind er godkendt!"),
                       backgroundColor: Colors.green,
                     ));
                     // Save Verified credentials

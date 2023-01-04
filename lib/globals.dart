@@ -9,6 +9,8 @@ bool bDebug = true;
 bool gbisLoggedIn = false;
 String gsUserName = "";
 String gsPassword = "";
+String gsUserNameAlias = "";
+String gsFullName = "";
 double MaxZoom = 18.49;
 
 //Version check
@@ -111,7 +113,9 @@ Future checkVersion(BuildContext context) async {
       version = versionCheck.packageVersion;
       packageName = versionCheck.packageName;
       storeVersion = versionCheck.storeVersion;
-      storeUrl = versionCheck.storeUrl;         
+      storeUrl = versionCheck.storeUrl;      
+      
+
   }
 
   void customShowUpdateDialog(BuildContext context, VersionCheck versionCheck) {

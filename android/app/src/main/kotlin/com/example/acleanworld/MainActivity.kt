@@ -1,4 +1,4 @@
-package dk.heki.acleanworld
+package dk.heki.acleanerworld
 
 import io.flutter.embedding.android.FlutterActivity
 

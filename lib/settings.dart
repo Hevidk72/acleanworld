@@ -63,6 +63,7 @@ class _SettingsState extends State<Settings> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
               children: [
                 TextFormField(
+                  readOnly: true,
                   keyboardType: TextInputType.emailAddress,
                   controller: _emailController,
                   decoration: InputDecoration(
@@ -84,11 +85,48 @@ class _SettingsState extends State<Settings> {
                 const SizedBox(height: 16),
                 TextFormField(
                   obscureText: true,
+                  readOnly: true,
                   controller: _passwordController,
                   decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.security),
                       prefixIconColor: Colors.blue,
                       hintText: "Password",
+                      hintStyle:
+                          TextStyle(color: Colors.black.withOpacity(0.3)),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: const BorderSide(color: Colors.blue),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: const BorderSide(color: Colors.blue),
+                      )),
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _userNameController,
+                  decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.perm_device_information_sharp),
+                      prefixIconColor: Colors.blue,
+                      hintText: "Bruger Navn / Alias",
+                      hintStyle:
+                          TextStyle(color: Colors.black.withOpacity(0.3)),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: const BorderSide(color: Colors.blue),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: const BorderSide(color: Colors.blue),
+                      )),
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _fullNameController,
+                  decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.perm_device_information_rounded),
+                      prefixIconColor: Colors.blue,
+                      hintText: "Fulde Navn",
                       hintStyle:
                           TextStyle(color: Colors.black.withOpacity(0.3)),
                       border: OutlineInputBorder(
@@ -127,6 +165,8 @@ class _SettingsState extends State<Settings> {
                   },
                   child: const Text('Gem data',style: TextStyle(fontSize: 30)),                  
                 ),
+                const SizedBox(height: 50),
+                Text("Version: ${globals.version} ${globals.packageName}")
               ],
             )));
   }
