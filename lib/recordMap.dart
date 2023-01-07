@@ -52,9 +52,7 @@ class _RecordMapState extends State<RecordMap> {
   }
 
   void initLocationService() async {
-    await _locationService.changeSettings(
-        accuracy: LocationAccuracy.high, interval: 1000);
-
+    
     LocationData? location;
     bool serviceEnabled;
     bool serviceRequestResult;
@@ -67,8 +65,11 @@ class _RecordMapState extends State<RecordMap> {
         _permission = permission == PermissionStatus.granted;
 
         if (_permission) {
+          _locationService.enableBackgroundMode(enable: true);        
           location = await _locationService.getLocation();
           _currentLocation = location;
+          await _locationService.changeSettings(accuracy: LocationAccuracy.high, interval: 1000);          
+          
           _locationService.onLocationChanged
               .listen((LocationData result) async {
             if (mounted) {
@@ -179,6 +180,7 @@ class _RecordMapState extends State<RecordMap> {
                   child: _serviceError!.isEmpty
                       ? Text(
                           'Pos: (${currentLatLng.latitude}, ${currentLatLng.longitude}) og Zoom=$_currentZoom')
+                          
                       //Text('This is a map that is showing (${currentLatLng.latitude}, ${currentLatLng.longitude}) and zoom=${_mapController.zoom}.')
                       : Text(
                           'Fejl ved at finde din lokation. Fejl Besked : $_serviceError'),
