@@ -109,12 +109,13 @@ int clip(num) {
 
 // Version Check
 Future checkVersion(BuildContext context) async {
-      await versionCheck.checkVersion(context);
+      await versionCheck.checkVersion(context);    
       version = versionCheck.packageVersion;
       packageName = versionCheck.packageName;
       storeVersion = versionCheck.storeVersion;
       storeUrl = versionCheck.storeUrl;      
-      
+      if (bDebug) { print("(checkVersion) Version:$version");
+      }
 
   }
 

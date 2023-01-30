@@ -22,6 +22,7 @@ class _SplashState extends State<Splash> {
   }
   
   _navigatetohome() async {
+    globals.checkVersion(context);
     await Future.delayed(
       const Duration(milliseconds: 4000),
     );
@@ -65,8 +66,8 @@ class _SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
-    globals.checkVersion(context);
-    if (debug) print("store:${globals.storeVersion ?? "Not Available!"}");
+    //globals.checkVersion(context);
+    if (debug) print("(Splash.dart) store:${globals.storeVersion ?? "Not Available!"}");
     if (debug) print("Version:${globals.version}");
   
     return Scaffold(
@@ -74,34 +75,32 @@ class _SplashState extends State<Splash> {
         fit: StackFit.expand,
         children: <Widget>[
           Container(
-            decoration: BoxDecoration(color: Colors.blue),
+            decoration: const BoxDecoration(color: Colors.blue),
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Expanded(
                 flex: 2,
-                child: Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const <Widget>[ Text(
-                        "A Cleaner World",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 28.0),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 10.0),
-                      ),
-                      CircleAvatar(
-                        backgroundColor: Colors.blue,
-                        radius: 100.0,
-                        child: Icon(LineAwesomeIcons.globe,
-                            color: Colors.greenAccent, size: 148.0),
-                      ),
-                    ],
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const <Widget>[ Text(
+                      "A Cleaner World",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 28.0),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0),
+                    ),
+                    CircleAvatar(
+                      backgroundColor: Colors.blue,
+                      radius: 100.0,
+                      child: Icon(LineAwesomeIcons.globe,
+                          color: Colors.greenAccent, size: 148.0),
+                    ),
+                  ],
                 ),
               ),
               Expanded(
@@ -109,11 +108,11 @@ class _SplashState extends State<Splash> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    CircularProgressIndicator(color: Colors.white), 
-                    Padding(
+                    const CircularProgressIndicator(color: Colors.white), 
+                    const Padding(
                       padding: EdgeInsets.only(top: 20.0),
                     ),
-                    Text(
+                    const Text(
                       "Lets make it a cleaner earth",
                       softWrap: true,
                       textAlign: TextAlign.center,
@@ -125,7 +124,7 @@ class _SplashState extends State<Splash> {
                     Text("Version:${globals.version}",
                       softWrap: true,
                       textAlign: TextAlign.right,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14.0,
                           color: Colors.white70),

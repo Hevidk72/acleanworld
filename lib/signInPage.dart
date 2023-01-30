@@ -209,16 +209,19 @@ class _ProfileFormState extends State<_ProfileForm> {
       }
     } catch (e) {
       print("Fejl ved hentning af profil : $e");
+      if (mounted) 
+      {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Fejl ved hentning af profil : $e'),
         backgroundColor: Colors.red,
       ));
-    }
-    setState(() {
-      _loading = false;
-    });
+        
+      setState(() {
+       _loading = false;
+      });
+      }
   }
-
+  }
   @override
   Widget build(BuildContext context) {
     return _loading

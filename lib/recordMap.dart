@@ -32,7 +32,7 @@ class _RecordMapState extends State<RecordMap> {
   String? _serviceError = '';
   int interActiveFlags = InteractiveFlag.all;
   final Location _locationService = Location();
-
+  
   // Trip Variables
   List<trip> currentTrip = [];
   List<LatLng> currpoints = [];
@@ -58,6 +58,7 @@ class _RecordMapState extends State<RecordMap> {
     bool serviceRequestResult;
 
     try {
+      _locationService.enableBackgroundMode(enable: true);
       serviceEnabled = await _locationService.serviceEnabled();
 
       if (serviceEnabled) {
@@ -65,7 +66,7 @@ class _RecordMapState extends State<RecordMap> {
         _permission = permission == PermissionStatus.granted;
 
         if (_permission) {
-          _locationService.enableBackgroundMode(enable: true);        
+          //_locationService.enableBackgroundMode(enable: true);
           location = await _locationService.getLocation();
           _currentLocation = location;
           await _locationService.changeSettings(accuracy: LocationAccuracy.high, interval: 1000);          
@@ -75,13 +76,14 @@ class _RecordMapState extends State<RecordMap> {
             if (mounted) {
               setState(() {
                 _currentLocation = result;
-                if (debug) {
-                  print(
-                      " Time / Speed = ${_currentLocation!.time} / ${_currentLocation!.speed}");
+                if (debug) 
+                {
+                  print(" Lat / Long = ${_currentLocation!.latitude} / ${_currentLocation!.longitude}");
                 }
 
                 // initial position
-                if (!initialPosition) {
+                if (!initialPosition) 
+                {
                   _mapController.move(
                       LatLng(_currentLocation!.latitude!,
                           _currentLocation!.longitude!),
@@ -90,11 +92,8 @@ class _RecordMapState extends State<RecordMap> {
                 initialPosition = true;
 
                 // If Live Update / Recording trip is enabled, move map center
-                if (_liveUpdate) {
-                  if (debug) {
-                    print(
-                        "Logging position setting camera to current location");
-                  }
+                if (_liveUpdate) 
+                {                 
                   _mapController.move(
                       LatLng(_currentLocation!.latitude!,
                           _currentLocation!.longitude!),
@@ -104,6 +103,12 @@ class _RecordMapState extends State<RecordMap> {
                   currentTrip.add(trip(
                       lat: _currentLocation!.latitude!,
                       long: _currentLocation!.longitude!));
+                  
+                  if (debug) 
+                  {
+                    print("Logging position setting camera to current location count ${currentTrip.length}");
+                  }
+
                   currpoints.add(LatLng(_currentLocation!.latitude!,
                       _currentLocation!.longitude!));
                 }
@@ -112,7 +117,7 @@ class _RecordMapState extends State<RecordMap> {
           });
         }
       } else {
-        serviceRequestResult = await _locationService.requestService();
+        serviceRequestResult = await _locationService.requestService();        
         if (serviceRequestResult) {
           initLocationService();
           return;
@@ -150,7 +155,7 @@ class _RecordMapState extends State<RecordMap> {
         width: 40,
         height: 40,
         point: currentLatLng,
-        builder: (ctx) => const Icon(Icons.my_location),
+        builder: (ctx) => const Icon(Icons.man),
       ),
     ];
 
@@ -189,6 +194,7 @@ class _RecordMapState extends State<RecordMap> {
                   child: FlutterMap(
                     mapController: _mapController,
                     options: MapOptions(
+                      keepAlive: true,
                       maxZoom: 18.49,
                       center: LatLng(
                           currentLatLng.latitude, currentLatLng.longitude),

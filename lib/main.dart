@@ -5,30 +5,50 @@ import 'RecordMap.dart';
 import 'Settings.dart';
 import 'SignInPage.dart';
 import 'Globals.dart' as globals;
+import 'package:package_info_plus/package_info_plus.dart';
 
 bool debug = globals.bDebug;
 
 main() async {
   runApp(const MyApp());
-// Setting Globals
-  globals.initSPHelper();
-  globals.initSPHelper().whenComplete(() {
-  globals.gsUserName = globals.SPHelper.sp.get("useremail")!;
-  globals.gsPassword = globals.SPHelper.sp.get("userpassword")!;
-  if (debug) print("globals.gsUserName=${globals.gsUserName}");
-  if (debug) print("globals.gsPassword=${globals.gsPassword}");
-  });
+// getting Globals
+ print("main() Called in main.dart");
   
+  globals.initSPHelper();
+  globals.initSPHelper().whenComplete(() 
+    {
+    globals.gsUserName = globals.SPHelper.sp.get("useremail")!;
+    globals.gsPassword = globals.SPHelper.sp.get("userpassword")!;
+    if (debug) print("globals.gsUserName=${globals.gsUserName}");
+    if (debug) print("globals.gsPassword=${globals.gsPassword}");
+    });  
+   // Get local version
+   PackageInfo packageInfo = await PackageInfo.fromPlatform();
+   globals.version = packageInfo.version;
+  if (debug) print("(Main.dart) globals.version=${globals.version}");
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+  
+@override
+  State<StatefulWidget> createState() => _stateMyApp();
+ }
 
+class _stateMyApp extends State<MyApp> {
+
+ @override
+  initState() {
+    super.initState();       
+    print("main.dart (initstate) Called in main.dart");    
+    globals.checkVersion(context);      
+    if (debug) print("(Main.dart) globals.version=${globals.version}");
+  }
+  
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
- 
-    return MaterialApp(
+   return MaterialApp(
         // in the below line, we are specifying title of our app.
         title: 'A Cleaner World',
         // in the below line, we are hiding our debug banner.

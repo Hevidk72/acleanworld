@@ -33,8 +33,8 @@ class _SettingsState extends State<Settings> {
     _fullNameController = TextEditingController();
     _emailController.text = globals.gsUserName;
     _passwordController.text = globals.gsPassword;
-    _userNameController.text = globals.packageName ?? "";
-    _fullNameController.text = globals.gsPassword;
+    _userNameController.text = globals.gsUserNameAlias;
+    _fullNameController.text = globals.gsFullName;
     if (debug) print("store:${globals.storeVersion ?? "Not Available!"}");
     if (debug) print("Version:${globals.version}");
     if (debug) print("PackageName:${globals.packageName}");
@@ -45,6 +45,8 @@ class _SettingsState extends State<Settings> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _userNameController.dispose();
+    _fullNameController.dispose();
     super.dispose();
   }
 
@@ -141,20 +143,20 @@ class _SettingsState extends State<Settings> {
                 const SizedBox(height: 16),
                 ElevatedButton(
                     onPressed: () async {
-                    try {
-                      final email = _emailController.text;
-                      final password = _passwordController.text;
+                    try {                      
                       await globals.dataBase.auth.signInWithPassword(
-                        email: email,
-                        password: password,
+                        email: _emailController.text,
+                        password: _passwordController.text,
                       );
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text("Log ind er OK!"),
                         backgroundColor: Colors.green,
                       ));
                       // Save Verified credentials
-                      globals.SPHelper.sp.save("useremail", email);
-                      globals.SPHelper.sp.save("userpassword", password);
+                      globals.SPHelper.sp.save("useremail", _emailController.text);
+                      globals.SPHelper.sp.save("userpassword", _passwordController.text);
+                      // And update user profile values
+                      // *todo*
                       
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -166,7 +168,7 @@ class _SettingsState extends State<Settings> {
                   child: const Text('Gem data',style: TextStyle(fontSize: 30)),                  
                 ),
                 const SizedBox(height: 50),
-                Text("Version: ${globals.version} ${globals.packageName}")
+                Text("Version: ${globals.version}")
               ],
             )));
   }
