@@ -200,12 +200,14 @@ class _HistoryMapState extends State<HistoryMap> {
                   style:
                       TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0)),
               centerTitle: true,
-              actions: <Widget>[
+          ),
+            /*  actions: <Widget>[
                 Text(
                   globals.gUser?.email ?? "",
                   style: const TextStyle(color: Colors.amber, fontSize: 12),
                 ),
               ]),
+              */
           drawer: buildDrawer(context, HistoryMap.route),
           body: Padding(
             padding: const EdgeInsets.all(2),

@@ -76,6 +76,7 @@ class _RecordMapState extends State<RecordMap> {
             if (mounted) {
               setState(() {
                 _currentLocation = result;
+                
                 if (debug) 
                 {
                   print(" Lat / Long = ${_currentLocation!.latitude} / ${_currentLocation!.longitude}");
@@ -142,8 +143,7 @@ class _RecordMapState extends State<RecordMap> {
     // Until currentLocation is initially updated, Widget can locate to 0, 0
     // by default or store previous location value to show.
     if (_currentLocation != null) {
-      currentLatLng =
-          LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!);
+      currentLatLng = LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!);
       _currentZoom = _mapController.zoom;
     } else {
       currentLatLng = LatLng(0, 0);
@@ -166,15 +166,16 @@ class _RecordMapState extends State<RecordMap> {
         child: Scaffold(
           appBar: AppBar(
               title:  const Text('A Cleaner World',
-                  style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 28.0)),
+              style:  TextStyle(fontWeight: FontWeight.bold, fontSize: 28.0)),
               centerTitle: true,
-              actions: <Widget>[
-                Text(globals.gUser?.email ?? "NONE",
-                  style: const TextStyle(
-                      color: Color.fromARGB(255, 255, 238, 255), fontSize: 12),
-                ),
-              ]),
+          ),
+          
+        //      actions: <Widget>[
+        //        Text(globals.gUser?.email ?? "NONE",
+        //          style: const TextStyle(
+        //              color: Color.fromARGB(255, 255, 238, 255), fontSize: 12),
+        //        ),
+        //      ]),
           drawer: buildDrawer(context, RecordMap.route),
           body: Padding(
             padding: const EdgeInsets.all(2),
@@ -183,12 +184,8 @@ class _RecordMapState extends State<RecordMap> {
                 Padding(
                   padding: const EdgeInsets.only(top: 0, bottom: 8),
                   child: _serviceError!.isEmpty
-                      ? Text(
-                          'Pos: (${currentLatLng.latitude}, ${currentLatLng.longitude}) og Zoom=$_currentZoom')
-                          
-                      //Text('This is a map that is showing (${currentLatLng.latitude}, ${currentLatLng.longitude}) and zoom=${_mapController.zoom}.')
-                      : Text(
-                          'Fejl ved at finde din lokation. Fejl Besked : $_serviceError'),
+                      ? Text( "Satelites: ${_currentLocation?.satelliteNumber} Pos: (${currentLatLng.latitude}, ${currentLatLng.longitude}) og Zoom=$_currentZoom")                               
+                      : Text('Fejl ved at finde din lokation. Fejl Besked : $_serviceError'),
                 ),
                 Flexible(
                   child: FlutterMap(
@@ -225,6 +222,7 @@ class _RecordMapState extends State<RecordMap> {
           ),
           floatingActionButton: Builder(builder: (BuildContext context) {
             return FloatingActionButton(
+              backgroundColor: _liveUpdate ? Colors.red : Colors.green,
               onPressed: () {
                 setState(() {
                   _liveUpdate = !_liveUpdate;
@@ -249,14 +247,9 @@ class _RecordMapState extends State<RecordMap> {
                     ));
                   } else {
                     if (debug) print("Stop/resume Button pressed");
-                    _mapController.move(
-                        LatLng(currentLatLng.latitude, currentLatLng.longitude),
-                        18.49);
+                    _mapController.move(LatLng(currentLatLng.latitude, currentLatLng.longitude),globals.MaxZoom);
                     interActiveFlags = InteractiveFlag.all;
-                    // Todo call dialog box to stop recording current trip or cancel trip. Get notes and kg litter collected and update Database.
-
-                    // Dialog: Do you want to save this trip ?.
-                    // Ask for trip litter weight in kg approx.
+                    
                     // Calculate trip length in meters
                     if (debug) print("Before end Dialog");
                     showEndTripDialog(context, "Afslut tur eller fortsæt ?", 2);
@@ -272,9 +265,7 @@ class _RecordMapState extends State<RecordMap> {
                   }
                 });
               },
-              child: _liveUpdate
-                  ? const Icon(Icons.stop_sharp)
-                  : const Icon(Icons.play_arrow),
+              child: _liveUpdate ? const Icon(Icons.stop_sharp) : const Icon(Icons.play_arrow),
             );
           }),
         ));

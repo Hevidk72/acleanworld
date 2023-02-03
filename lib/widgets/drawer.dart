@@ -57,7 +57,7 @@ Drawer buildDrawer(BuildContext context, String currentRoute)
         ),),
         _buildMenuItem(context,'Kort', 'Ny tur', RecordMap.route, currentRoute, Icons.map),
         _buildMenuItem(context,'Kort', 'Historik', HistoryMap.route, currentRoute, Icons.map_outlined),
-        _buildMenuItem(context,'Indstillinger', '', Settings.route, currentRoute, Icons.settings),        
+        _buildMenuItem(context,'Min Side', 'Indstillinger', Settings.route, currentRoute, Icons.settings),        
         _buildMenuItem(context,'Log ud', 'Skift bruger', SignInPage.route, currentRoute, Icons.login),
       ],
     ),  

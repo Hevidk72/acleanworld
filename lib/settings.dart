@@ -58,7 +58,7 @@ class _SettingsState extends State<Settings> {
         },
         child: Scaffold(
             appBar: AppBar(
-              title: const Text("Indstillinger"),
+              title: const Text("Min Side"),
             ),
             drawer: buildDrawer(context, Settings.route),
             body: ListView(
