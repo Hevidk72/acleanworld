@@ -1,3 +1,4 @@
+import 'package:acleanworld/SignInOrSignUp.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'RecordMap.dart';
@@ -60,7 +61,7 @@ class _SplashState extends State<Splash> {
   } 
   else 
   {
-    Navigator.pushNamed(context, SignInPage.route);
+    Navigator.pushNamed(context, SignInOrSignUp.route);
   }   
   }
 

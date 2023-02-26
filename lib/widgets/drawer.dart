@@ -21,7 +21,15 @@ Widget _buildMenuItem(
       else 
       {
         debugPrint('Drawer RouteName: "$routeName" Current Route: "$currentRoute"');
-        Navigator.pushReplacementNamed(context, routeName);
+        if (routeName.contains("close"))
+        {
+          Navigator.pop(context);
+        }
+        else
+        {
+          Navigator.pushReplacementNamed(context, routeName);
+        }
+        
       }
     },
   );
@@ -37,12 +45,12 @@ Drawer buildDrawer(BuildContext context, String currentRoute)
     (
       padding: EdgeInsets.zero,
       children: <Widget>[
-        const SizedBox
+        SizedBox
         (
         height: 95,
         child: DrawerHeader
         (
-          decoration: BoxDecoration
+          decoration: const BoxDecoration
           (
             color: Colors.blue,            
             boxShadow: [
@@ -52,13 +60,18 @@ Drawer buildDrawer(BuildContext context, String currentRoute)
               offset: Offset(0.0, 5.0),
             ),
           ] 
-          ),          
-          child: Text('Menu', style:  TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: Colors.white)),          
-        ),),
+          ),
+          child: GestureDetector(
+                 child: const Text( 'Menu', style:  TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: Colors.white)),  
+                 onTap: () { print(  "I was tapped!"); Navigator.pop(context);},
+              ), 
+          ),
+        ),
         _buildMenuItem(context,'Kort', 'Ny tur', RecordMap.route, currentRoute, Icons.map),
         _buildMenuItem(context,'Kort', 'Historik', HistoryMap.route, currentRoute, Icons.map_outlined),
         _buildMenuItem(context,'Min Side', 'Indstillinger', Settings.route, currentRoute, Icons.settings),        
         _buildMenuItem(context,'Log ud', 'Skift bruger', SignInPage.route, currentRoute, Icons.login),
+        _buildMenuItem(context,'Luk menuen', '', "close", currentRoute, Icons.close),
       ],
     ),  
   );

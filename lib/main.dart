@@ -4,6 +4,7 @@ import 'Splash.dart';
 import 'RecordMap.dart';
 import 'Settings.dart';
 import 'SignInPage.dart';
+import 'SignInOrSignUp.dart';
 import 'Globals.dart' as globals;
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -39,9 +40,10 @@ class _stateMyApp extends State<MyApp> {
 
  @override
   initState() {
-    super.initState();       
     print("main.dart (initstate) Called in main.dart");    
-    globals.checkVersion(context);      
+    globals.checkVersion(context); 
+    super.initState();       
+        
     if (debug) print("(Main.dart) globals.version=${globals.version}");
   }
   
@@ -63,7 +65,8 @@ class _stateMyApp extends State<MyApp> {
           SignInPage.route: (context) => const SignInPage(),
           RecordMap.route: (context) => const RecordMap(),
           HistoryMap.route: (context) => const HistoryMap(),
-          Settings.route: (context) => const Settings()
+          Settings.route: (context) => const Settings(),
+          SignInOrSignUp.route: (context) => const SignInOrSignUp()
         });
   }
 }
