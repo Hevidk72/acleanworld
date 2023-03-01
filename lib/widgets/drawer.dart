@@ -13,6 +13,7 @@ Widget _buildMenuItem(
     subtitle: Text(subtitle),
     leading: Icon(icon),
     selected: isSelected,
+    selectedColor: Color.fromRGBO(55, 125, 125, 1.0),
     onTap: () {
       if (isSelected) 
       {
