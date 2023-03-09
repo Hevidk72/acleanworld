@@ -50,7 +50,8 @@ class _SplashState extends State<Splash> {
     {
       globals.gbisLoggedIn = false;
     }    
-    if (globals.bDebug) {
+    if (globals.bDebug) 
+    {
       print("Setting global gbisLoggedIn=${globals.gbisLoggedIn}");
     }
   } 

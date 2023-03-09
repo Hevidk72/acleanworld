@@ -1,7 +1,8 @@
+import 'package:acleanworld/SignInPage.dart';
 import 'package:flutter/material.dart';
 import './widgets/Drawer.dart';
-import 'RecordMap.dart';
 import 'Globals.dart' as globals;
+import 'SignUpPage.dart';
 
 class SignInOrSignUp extends StatefulWidget {
   static const String route = "/SignInOrSignUp";
@@ -15,6 +16,11 @@ class _SignInOrSignUpState extends State<SignInOrSignUp> {
   @override
   void initState() 
   {
+      globals.dataBase.auth.signOut();
+      globals.SPHelper.sp.save("useremail", "");
+      globals.SPHelper.sp.save("userpassword", "");
+      globals.gsUserName = "";
+      globals.gsPassword = "";
       super.initState();
   }
   
@@ -34,15 +40,11 @@ class _SignInOrSignUpState extends State<SignInOrSignUp> {
             children: [
               ElevatedButton(
                 onPressed: () async {                  
-                  try {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text("Log ind er godkendt!"),
-                      backgroundColor: Colors.green,
-                    ));
-                    
-                    
-                    Navigator.popAndPushNamed(context, RecordMap.route);
-                  } catch (e) {
+                  try {                      
+                      Navigator.popAndPushNamed(context, SignInPage.route);
+                      } 
+                  catch (e) 
+                  {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text("Log ind fej! : $e"),
                       backgroundColor: Colors.red,
@@ -54,12 +56,7 @@ class _SignInOrSignUpState extends State<SignInOrSignUp> {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () async {
-                  
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('Signup failed! : e'),
-                      backgroundColor: Colors.red,
-                    ));                    
-                  
+                    Navigator.popAndPushNamed(context, SignUpPage.route);                                      
                 },
                 child: const Text('Opret ny bruger',style: TextStyle(fontSize: 30)),
               ),] ),)

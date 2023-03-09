@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../RecordMap.dart';
 import '../HistoryMap.dart';
 import '../Settings.dart';
-import '../SignInPage.dart';
+import '../SignInOrSignUp.dart';
 
 Widget _buildMenuItem(
     BuildContext context, String title, String subtitle, String routeName, String currentRoute, IconData icon) {
@@ -63,7 +63,7 @@ Drawer buildDrawer(BuildContext context, String currentRoute)
           ] 
           ),
           child: GestureDetector(
-                 child: const Text( 'Menu', style:  TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: Colors.white)),  
+                 child: const Text( 'Menu', style:  TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold, color: Colors.white)),  
                  onTap: () { print(  "I was tapped!"); Navigator.pop(context);},
               ), 
           ),
@@ -71,7 +71,7 @@ Drawer buildDrawer(BuildContext context, String currentRoute)
         _buildMenuItem(context,'Kort', 'Ny tur', RecordMap.route, currentRoute, Icons.map),
         _buildMenuItem(context,'Kort', 'Historik', HistoryMap.route, currentRoute, Icons.map_outlined),
         _buildMenuItem(context,'Min Side', 'Indstillinger', Settings.route, currentRoute, Icons.settings),        
-        _buildMenuItem(context,'Log ud', 'Skift bruger', SignInPage.route, currentRoute, Icons.login),
+        _buildMenuItem(context,'Log ud', 'Skift bruger', SignInOrSignUp.route, currentRoute, Icons.login),
         _buildMenuItem(context,'Luk menuen', '', "close", currentRoute, Icons.close),
       ],
     ),  
