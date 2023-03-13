@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,7 +24,8 @@ class HistoryMap extends StatefulWidget {
   _HistoryMapState createState() => _HistoryMapState();
 }
 
-class _HistoryMapState extends State<HistoryMap> {
+class _HistoryMapState extends State<HistoryMap> 
+{
   LocationData? _currentLocation;
   double _currentZoom = 0;
   late final MapController _mapController;
@@ -33,33 +35,19 @@ class _HistoryMapState extends State<HistoryMap> {
   final Location _locationService = Location();
   bool initialPosition = false;
 
-  late Future<List<Polyline>> polylines;
-  Future<List<Polyline>> getPolylines() async {
-    final polyLines = [
-      Polyline(
-        points: [
-          LatLng(50.5, -0.09),
-          LatLng(51.3498, -6.2603),
-          LatLng(53.8566, 2.3522),
-        ],
-        strokeWidth: 4,
-        color: Color.fromARGB(255, 90, 243, 2),
-      ),
-    ];
-    await Future<void>.delayed(const Duration(seconds: 3));
-    return polyLines;
-  }
-
+  List<Polyline> Polylines=[Polyline(isDotted: true, points: [LatLng(0,0)], strokeWidth: 0, color: Colors.green)];
+  int trips_ = 0;
+ 
   @override
-  initState() {
+  initState() 
+  {   
     super.initState();
     _mapController = MapController();
     initLocationService();
   }
 
   void initLocationService() async {
-    await _locationService.changeSettings(
-        accuracy: LocationAccuracy.high, interval: 1000);
+    await _locationService.changeSettings(accuracy: LocationAccuracy.high, interval: 1000);
 
     LocationData? location;
     bool serviceEnabled;
@@ -80,11 +68,12 @@ class _HistoryMapState extends State<HistoryMap> {
             if (mounted) {
               setState(() {
                 _currentLocation = result;
+               /*
                 if (debug) {
                   print(
                       " Time / Speed = ${_currentLocation!.time} / ${_currentLocation!.speed}");
                 }
-
+*/
                 // initial position
                 if (!initialPosition) {
                   _mapController.move(
@@ -117,6 +106,42 @@ class _HistoryMapState extends State<HistoryMap> {
     }
   }
 
+  // Get Polylines with colours
+  void getPolylines(List<Map<String, dynamic>> jsonArray) async 
+  {
+    int count = 1;          
+
+    // Clear polylines if any exists
+    if (jsonArray.isNotEmpty) Polylines.clear();
+    
+    Polyline polyLine = Polyline(isDotted: true, points: [LatLng(0,0)], strokeWidth: 0, color: Colors.green);
+    
+    // Loop over database records trips
+    for (var element in jsonArray) 
+    { 
+      // Clear Polyline
+      polyLine = Polyline(isDotted: true, points: [LatLng(0,0)], strokeWidth: 0, color: Colors.green);
+      
+      //print ("trip $count ${globals.getColorValue(count)}");      
+      print (element['trip_data']);
+          
+      for (var word in jsonDecode(element["trip_data"])) 
+      {  
+        polyLine.points.add(LatLng(word['lat'], word['long']));                
+      }
+      
+      // Adding Polyline to map        
+      print ("Adding Polyline $count");
+      Polylines.add(polyLine);
+      //Polylines.add(polyLine);
+      
+      // increment trip counter
+      count++;      
+    }       
+      trips_ = count-1;  
+      print ("Polylines loop done !");     
+  }
+
   @override
   Widget build(BuildContext context) {
     LatLng currentLatLng;
@@ -140,21 +165,52 @@ class _HistoryMapState extends State<HistoryMap> {
       ),
     ];
 
-    Future<void> _showAction(BuildContext context, int index) async {
-      int trips_ = 0;
+    void _showAction(BuildContext context, int index) async {
+      final userId = globals.dataBase.auth.currentUser!.id;
       switch (index) {
         case 0:
-          try {
-            final userId = globals.dataBase.auth.currentUser!.id;
-            final data = await globals.dataBase
-                .from("get_trips")
-                .select("*")
+        // Current user trips
+          try 
+          {            
+            final List<Map<String, dynamic>> data = await globals.dataBase                
+                .from("user_get_trips")
+                .select<List<Map<String, dynamic>>>("trip_age_days, trip_data")                
                 .match({'user_id': userId})
+                .order("trip_age_days", ascending: true);               
+
+            if (data.isNotEmpty) 
+            {            
+              getPolylines(data);
+            }
+            else
+            {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Ingen ture fundet!'), backgroundColor: Colors.red));
+            }
+          } 
+          catch (e) 
+          {            
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Fejl ved hentning af profil : $e'),
+              backgroundColor: Colors.red,
+            ));
+          }          
+          break;
+        case 1:
+        // Not Current user
+        try { 
+          final data = await globals.dataBase                
+                .from("user_get_trips")
+                .select<List<Map<String, dynamic>>>("trip_age_days, trip_data")     
+                .not('user_id','eq', userId)
                 .order("trip_age_days", ascending: true);
 
-            if (data != null) {
+            if (data.isNotEmpty) 
+            {
               print(data);
-              
+            }
+            else
+            {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Ingen ture fundet!'), backgroundColor: Colors.red));
             }
           } catch (e) {
             print("SQL Error : $e");
@@ -162,18 +218,35 @@ class _HistoryMapState extends State<HistoryMap> {
               content: Text('Fejl ved hentning af profil : $e'),
               backgroundColor: Colors.red,
             ));
-          }
-          print('zero!');
-          break;
-        case 1:
-          print('one!');
+          }          
           break;
         case 2:
-          print('two!');
+         // All user trips
+          try { 
+          final data = await globals.dataBase                
+                .from("user_get_trips")
+                .select<List<Map<String, dynamic>>>("trip_age_days, trip_data")   
+                .order("trip_age_days", ascending: true);
+          if (data.isNotEmpty) 
+          {
+            print(data);                          
+          }
+          else
+          {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Ingen ture fundet!'), backgroundColor: Colors.red));
+          }
+          } catch (e) {
+            print("SQL Error : $e");
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Fejl ved hentning af profil : $e'),
+              backgroundColor: Colors.red,
+            ));
+          }          
           break;
         default:
-          print('choose a different number!');
+          if (debug) print('Not implemented yet!');
       }
+      /*
       showDialog<void>(
         context: context,
         builder: (context) {
@@ -188,6 +261,7 @@ class _HistoryMapState extends State<HistoryMap> {
           );
         },
       );
+      */
     }
 
     return WillPopScope(
@@ -201,13 +275,6 @@ class _HistoryMapState extends State<HistoryMap> {
                       TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0)),
               centerTitle: true,
           ),
-            /*  actions: <Widget>[
-                Text(
-                  globals.gUser?.email ?? "",
-                  style: const TextStyle(color: Colors.amber, fontSize: 12),
-                ),
-              ]),
-              */
           drawer: buildDrawer(context, HistoryMap.route),
           body: Padding(
             padding: const EdgeInsets.all(2),
@@ -225,21 +292,17 @@ class _HistoryMapState extends State<HistoryMap> {
                 Flexible(
                   child: FlutterMap(
                     mapController: _mapController,
-                    options: MapOptions(
-                      maxZoom: globals.MaxZoom,
-                      center: LatLng(
-                          currentLatLng.latitude, currentLatLng.longitude),
-                      interactiveFlags: interActiveFlags,
-                    ),
-                    children: [
-                      TileLayer(
-                        urlTemplate:
-                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        userAgentPackageName:
-                            'dev.fleaflet.flutter_map.example',
-                      ),
+                    options: MapOptions(maxZoom: globals.MaxZoom,
+                                        center: LatLng(currentLatLng.latitude, currentLatLng.longitude),
+                                        interactiveFlags: interActiveFlags,
+                                        ),
+                    children: 
+                    [
+                      TileLayer(urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                userAgentPackageName: 'dev.fleaflet.flutter_map.example',
+                               ),
                       MarkerLayer(markers: markers),
-                      // PolylineLayer(polylines: [ getPolylines() ]),
+                      PolylineLayer(polylines: Polylines),
                     ],
                   ),
                 ),

@@ -95,29 +95,19 @@ class _RecordMapState extends State<RecordMap> {
                 // If Live Update / Recording trip is enabled, move map center
                 if (_liveUpdate) 
                 {                 
-                  _mapController.move(
-                      LatLng(_currentLocation!.latitude!,
-                          _currentLocation!.longitude!),
-                      _mapController.zoom);
-
+                  _mapController.move(LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!),_mapController.zoom);
                   // logging trip data here:
-                  currentTrip.add(trip(
-                      lat: _currentLocation!.latitude!,
-                      long: _currentLocation!.longitude!));
-                  
-                  if (debug) 
-                  {
-                    print("Logging position setting camera to current location count ${currentTrip.length}");
-                  }
-
-                  currpoints.add(LatLng(_currentLocation!.latitude!,
-                      _currentLocation!.longitude!));
+                  currentTrip.add(trip(lat: _currentLocation!.latitude!,long: _currentLocation!.longitude!));                  
+                  if (debug) print("Logging position setting camera to current location count ${currentTrip.length}");
+                  currpoints.add(LatLng(_currentLocation!.latitude!,_currentLocation!.longitude!));
                 }
               });
             }
           });
         }
-      } else {
+      } 
+      else 
+      {
         serviceRequestResult = await _locationService.requestService();        
         if (serviceRequestResult) {
           initLocationService();
@@ -142,21 +132,20 @@ class _RecordMapState extends State<RecordMap> {
     LatLng currentLatLng;
     // Until currentLocation is initially updated, Widget can locate to 0, 0
     // by default or store previous location value to show.
-    if (_currentLocation != null) {
+    if (_currentLocation != null) 
+    {
       currentLatLng = LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!);
       _currentZoom = _mapController.zoom;
-    } else {
+    } 
+    else 
+    {
       currentLatLng = LatLng(0, 0);
       _currentZoom = 17;
     }
 
-    final markers = <Marker>[
-      Marker(
-        width: 40,
-        height: 40,
-        point: currentLatLng,
-        builder: (ctx) => const Icon(Icons.man),
-      ),
+    final markers = <Marker>
+    [
+      Marker(width: 40,height: 40, point: currentLatLng, builder: (ctx) => const Icon(Icons.man)),
     ];
 
     return WillPopScope(

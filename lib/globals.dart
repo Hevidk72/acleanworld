@@ -27,6 +27,7 @@ const supabaseKey =
 final dataBase = SupabaseClient(supabaseUrl, supabaseKey);
 User? gUser;
 
+
 //Shared Preferences
 
 Future<void> initSPHelper() async {
@@ -85,7 +86,7 @@ Future<bool> onWillPop(context) async {
       false;
 }
 
-Color getColorValue(int value_) {
+Color getColorValue(value_) {
   return Color.fromRGBO(getRed(value_), getGreen(value_), 0, 200);
 }
 
@@ -102,7 +103,9 @@ int getGreen(i) {
 int clip(num) {
   if (num > 200) {
     return num;
-  } else {
+  } 
+  else 
+  {
     return num;
   }
 }
@@ -124,12 +127,11 @@ Future checkVersion(BuildContext context) async {
     context: context,
     barrierDismissible: false,
     builder: (context) => AlertDialog(
-      title: const Text('NEW Update Available'),
+      title: const Text('Ny opdatering '),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
-            Text(
-                'Do you REALLY want to update to ${versionCheck.storeVersion}?'),
+            Text('Do you REALLY want to update to ${versionCheck.storeVersion}?'),
             Text('(current version ${versionCheck.packageVersion})'),
           ],
         ),
