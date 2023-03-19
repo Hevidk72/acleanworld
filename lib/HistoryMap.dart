@@ -354,8 +354,12 @@ class _HistoryMapState extends State<HistoryMap>
                                         child: _serviceError!.isEmpty
                                         ? Text('pos: (${currentLatLng.latitude}, ${currentLatLng.longitude}) og Zoom=$_currentZoom')
                                         : Text('Fejl ved at finde din lokation. Fejl Besked : $_serviceError'),
-                                        ),                
-                                        Flexible
+                                        ),
+                                      /*  DropdownButtonFormField(items: <String>['1','2','3','4'].toList(),
+                                        onChanged: (value) {
+                                          
+                                        },),                */
+                                      Flexible
                                       (                                        
                                         child: FlutterMap
                                         (
@@ -363,7 +367,8 @@ class _HistoryMapState extends State<HistoryMap>
                                                options: MapOptions
                                                (maxZoom: globals.MaxZoom,
                                                 center: LatLng(currentLatLng.latitude, currentLatLng.longitude),
-                                                interactiveFlags: interActiveFlags,                             
+                                                interactiveFlags: interActiveFlags,      
+                                                
                                                /* onTap: (tapPosition, point) 
                                                 {
                                                   setState(() 
