@@ -22,8 +22,7 @@ final versionCheck = VersionCheck(country: 'dk');
 
 // Database init
 const supabaseUrl = 'https://zbqoritnaqhkridbyaxc.supabase.co';
-const supabaseKey =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpicW9yaXRuYXFoa3JpZGJ5YXhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Njg2MzI0NDEsImV4cCI6MTk4NDIwODQ0MX0.NO3SvLCPEmXMFIVFiHBYV9ZLp0o2IFgndMzpkwQG_F0';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpicW9yaXRuYXFoa3JpZGJ5YXhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Njg2MzI0NDEsImV4cCI6MTk4NDIwODQ0MX0.NO3SvLCPEmXMFIVFiHBYV9ZLp0o2IFgndMzpkwQG_F0';
 final dataBase = SupabaseClient(supabaseUrl, supabaseKey);
 User? gUser;
 
@@ -113,7 +112,7 @@ int clip(num) {
 // Version Check
 Future checkVersion(BuildContext context) async {
       await versionCheck.checkVersion(context);    
-      version = versionCheck.packageVersion;
+      version = versionCheck.packageVersion;      
       packageName = versionCheck.packageName;
       storeVersion = versionCheck.storeVersion;
       storeUrl = versionCheck.storeUrl;      

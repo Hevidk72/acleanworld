@@ -248,6 +248,7 @@ class _HistoryMapState extends State<HistoryMap>
             {
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Ingen ture fundet!'), backgroundColor: Colors.red));
             }
+           
           } 
           catch (e) 
           {            

@@ -25,7 +25,7 @@ class _SplashState extends State<Splash> {
   _navigatetohome() async {
     globals.checkVersion(context);
     //await Future.delayed(const Duration(milliseconds: 4000),);
-    await Future.delayed(const Duration(milliseconds: 4000));
+    await Future.delayed(const Duration(milliseconds: 2000));
   // check saves login
   if (globals.gsUserName.isNotEmpty) 
   {

@@ -47,7 +47,7 @@ class _SettingsState extends State<Settings> {
     _passwordController.dispose();
     _userNameController.dispose();
     _fullNameController.dispose();
-    super.dispose();
+   // super.dispose();
   }
 
   @override
@@ -165,11 +165,85 @@ class _SettingsState extends State<Settings> {
                       ));
                     }
                   },
+                  style: ButtonStyle(padding: MaterialStateProperty.resolveWith<EdgeInsetsGeometry>(
+                          (Set<MaterialState> states) { return const EdgeInsets.all(20); },
+                          ),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                   RoundedRectangleBorder(                                  
+                                   borderRadius: BorderRadius.circular(20),
+                                   side: const BorderSide(color: Colors.blue),      
+                                   )
+                                   )
+                                ),
                   child: const Text('Gem data',style: TextStyle(fontSize: 30)),                  
                 ),
-                const SizedBox(height: 50),
-                Text("Version: ${globals.version}")
+                const SizedBox(height: 20),
+                ElevatedButton(onPressed: () async { showDeleteUserAlertDialog(context); },
+                               style: ButtonStyle(padding: MaterialStateProperty.resolveWith<EdgeInsetsGeometry>(
+                                (Set<MaterialState> states) { return const EdgeInsets.all(20); },),
+                               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                   RoundedRectangleBorder(                                  
+                                   borderRadius: BorderRadius.circular(20),
+                                   side: const BorderSide(color: Colors.blue),      
+                                   )
+                                   )
+                                ),
+                               child: const Text('Slet bruger + data',style: TextStyle(fontSize: 30))),
+                const SizedBox(height: 15),
+                Text("Version: ${globals.version}",textAlign: TextAlign.center,)
               ],
             )));
+  }
+  
+  showDeleteUserAlertDialog(BuildContext context) 
+  {
+    // set up the buttons
+    Widget cancelButton = ElevatedButton(
+      child: const Text("Fortryd"),
+      onPressed:  () 
+      {
+        Navigator.of(context).pop(); // dismiss dialog
+      },
+    );
+    Widget continueButton = ElevatedButton(
+      child: const Text("Jeg ønsker at slette min bruger"),
+      onPressed:  () async
+      {
+        try {
+              final userId = globals.dataBase.auth.currentUser!.id;
+              globals.dataBase.auth.signOut();
+              globals.SPHelper.sp.save("useremail", "");
+              globals.SPHelper.sp.save("userpassword", "");
+              globals.gsUserName = "";
+              globals.gsPassword = "";                   
+              await globals.dataBase.auth.admin.deleteUser(userId);
+           }
+        catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("Fejl ved sletning af bruger: $e"),
+                      backgroundColor: Colors.red,
+                    ));                    
+                  }
+      }
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: const Text("!Advarsel!"),
+      content: const Text("Er du sikker på at du vil slette brugeren og alt tilhørende data?"),
+      actions: 
+      [
+        cancelButton,
+        continueButton,
+      ],
+    );
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) 
+    {
+      return alert;
+    },
+  );
   }
 }

@@ -47,9 +47,6 @@ class _ProfileFormState extends State<_ProfileForm> {
   final _usernameController = TextEditingController();
   final _fullNameController = TextEditingController();
   
-
-  
-
   @override
   void initState() {
     

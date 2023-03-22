@@ -134,6 +134,16 @@ class _LoginFormState extends State<_LoginForm> {
                     });
                   }
                 },
+                style: ButtonStyle(padding: MaterialStateProperty.resolveWith<EdgeInsetsGeometry>(
+                          (Set<MaterialState> states) { return const EdgeInsets.all(20); },
+                          ),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                   RoundedRectangleBorder(                                  
+                                   borderRadius: BorderRadius.circular(20),
+                                   side: const BorderSide(color: Colors.blue),      
+                                   )
+                                   )
+                                ),
                 child: const Text('Log ind',style: TextStyle(fontSize: 30)),
               ),           
             ],
