@@ -1,8 +1,7 @@
-import 'package:acleanworld/SignInOrSignUp.dart';
+import 'SignInOrSignUp.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'RecordMap.dart';
-import 'SignInPage.dart';
 import 'Globals.dart' as globals;
 
 class Splash extends StatefulWidget {
@@ -15,17 +14,17 @@ class _SplashState extends State<Splash> {
   bool userDataExists = false;
 
   @override
-  void initState() {
+  void initState() 
+  {
     super.initState();
-    if (mounted) {      
+    if (mounted) 
+    {      
       _navigatetohome();
     }
   }
   
   _navigatetohome() async {
-    globals.checkVersion(context);
-    //await Future.delayed(const Duration(milliseconds: 4000),);
-    await Future.delayed(const Duration(milliseconds: 2000));
+  await Future.delayed(const Duration(milliseconds: 4000));
   // check saves login
   if (globals.gsUserName.isNotEmpty) 
   {

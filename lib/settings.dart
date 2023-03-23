@@ -1,3 +1,4 @@
+import 'package:acleanworld/signInPage.dart';
 import 'package:flutter/material.dart';
 import './widgets/Drawer.dart';
 import 'Globals.dart' as globals;
@@ -47,7 +48,7 @@ class _SettingsState extends State<Settings> {
     _passwordController.dispose();
     _userNameController.dispose();
     _fullNameController.dispose();
-   // super.dispose();
+    super.dispose();
   }
 
   @override
@@ -178,17 +179,18 @@ class _SettingsState extends State<Settings> {
                   child: const Text('Gem data',style: TextStyle(fontSize: 30)),                  
                 ),
                 const SizedBox(height: 20),
-                ElevatedButton(onPressed: () async { showDeleteUserAlertDialog(context); },
+                ElevatedButton(onPressed: () async { showDeleteUserAlertDialog(context); },                              
                                style: ButtonStyle(padding: MaterialStateProperty.resolveWith<EdgeInsetsGeometry>(
                                 (Set<MaterialState> states) { return const EdgeInsets.all(20); },),
+                                backgroundColor: MaterialStateProperty.all(Colors.red),
                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                    RoundedRectangleBorder(                                  
                                    borderRadius: BorderRadius.circular(20),
-                                   side: const BorderSide(color: Colors.blue),      
+                                   side: const BorderSide(color: Colors.black),      
                                    )
                                    )
-                                ),
-                               child: const Text('Slet bruger + data',style: TextStyle(fontSize: 30))),
+                                ),                                
+                               child: const Text('Slet bruger og data',style: TextStyle(fontSize: 30))),
                 const SizedBox(height: 15),
                 Text("Version: ${globals.version}",textAlign: TextAlign.center,)
               ],
@@ -202,7 +204,7 @@ class _SettingsState extends State<Settings> {
       child: const Text("Fortryd"),
       onPressed:  () 
       {
-        Navigator.of(context).pop(); // dismiss dialog
+        Navigator.of(context).pop(); // dismiss dialog       
       },
     );
     Widget continueButton = ElevatedButton(
@@ -216,13 +218,15 @@ class _SettingsState extends State<Settings> {
               globals.SPHelper.sp.save("userpassword", "");
               globals.gsUserName = "";
               globals.gsPassword = "";                   
-              await globals.dataBase.auth.admin.deleteUser(userId);
+              await globals.dataBase.auth.admin.deleteUser(userId);              
+              Navigator.popAndPushNamed(context, SignInPage.route);
            }
         catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text("Fejl ved sletning af bruger: $e"),
                       backgroundColor: Colors.red,
-                    ));                    
+                    ));       
+                    Navigator.popAndPushNamed(context, SignInPage.route);             
                   }
       }
     );

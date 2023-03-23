@@ -59,7 +59,7 @@ class _HistoryMapState extends State<HistoryMap>
     final List<Map<String, dynamic>> data = await globals.dataBase                
                 .from("user_get_trips")
                 .select<List<Map<String, dynamic>>>("trip_age_days, trip_data")                
-                .match({'user_id::text': "9ccbbd62-2c9d-4296-86d8-5a0c33b407ba"})
+                .match({'user_id::text': userId})
                 .order("trip_age_days", ascending: true);       
 
       // Loop over database records trips

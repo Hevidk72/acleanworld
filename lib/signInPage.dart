@@ -18,14 +18,12 @@ class _SignInPageState extends State<SignInPage> {
     super.initState();
   }
 
-  Future<void> _getAuth() async {
-    setState(() {
-      globals.gUser = globals.dataBase.auth.currentUser;
-    });
-    globals.dataBase.auth.onAuthStateChange.listen((data) {
-      setState(() {
-        globals.gUser = data.session?.user;
-      });
+  Future<void> _getAuth() async 
+  {
+    globals.gUser = globals.dataBase.auth.currentUser;
+    globals.dataBase.auth.onAuthStateChange.listen((data) 
+    {
+       globals.gUser = data.session?.user;
     });
   }
 

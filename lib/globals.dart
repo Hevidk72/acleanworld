@@ -116,7 +116,8 @@ Future checkVersion(BuildContext context) async {
       packageName = versionCheck.packageName;
       storeVersion = versionCheck.storeVersion;
       storeUrl = versionCheck.storeUrl;      
-      if (bDebug) { print("(checkVersion) Version:$version");
+   
+      if (bDebug) { print("globals.dart: (checkVersion) Version:$version build:$versionCheck.");
       }
 
   }

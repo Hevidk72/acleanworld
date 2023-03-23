@@ -245,7 +245,7 @@ class _ProfileFormState extends State<_ProfileForm> {
                         final fullName = _fullNameController.text;                 
                         try
                         {
-                          await globals.dataBase.auth.signUp(email: email, password: password,);
+                          await globals.dataBase.auth.signUp(email: email, password: password,);                          
                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Bruger Oprettet!'),backgroundColor: Colors.green));
                           // Sign In:
                           final userId = globals.dataBase.auth.currentUser!.id;
