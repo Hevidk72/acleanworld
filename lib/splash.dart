@@ -4,6 +4,8 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'RecordMap.dart';
 import 'Globals.dart' as globals;
 
+bool debug = globals.bDebug;
+
 class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);
   @override
@@ -12,7 +14,7 @@ class Splash extends StatefulWidget {
 
 class _SplashState extends State<Splash> {
   bool userDataExists = false;
-
+  
   @override
   void initState() 
   {
@@ -22,7 +24,7 @@ class _SplashState extends State<Splash> {
       _navigatetohome();
     }
   }
-  
+
   _navigatetohome() async {
   await Future.delayed(const Duration(milliseconds: 4000));
   // check saves login
@@ -67,7 +69,7 @@ class _SplashState extends State<Splash> {
   Widget build(BuildContext context) {
     //globals.checkVersion(context);
     if (debug) print("(Splash.dart) store:${globals.storeVersion ?? "Not Available!"}");
-    if (debug) print("Version:${globals.version}");
+    if (debug) print("(Splash.dart) Version:${globals.version}");
   
     return Scaffold(
       body: Stack(
@@ -120,7 +122,7 @@ class _SplashState extends State<Splash> {
                           fontSize: 18.0,
                           color: Colors.white),
                     ),
-                    Text("Version:${globals.version}",
+                    Text("Version: ${globals.version}",
                       softWrap: true,
                       textAlign: TextAlign.right,
                       style: const TextStyle(

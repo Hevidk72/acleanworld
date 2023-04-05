@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math' as math;
+import 'package:acleanworld/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -54,6 +55,8 @@ class _HistoryMapState extends State<HistoryMap>
     String userId = globals.dataBase.auth.currentUser!.id;     
     int count = 1;
     var polyLine = Polyline(isDotted: true, points: [LatLng(55.6577721,9.3988783)], strokeWidth: 0, color: Colors.green);
+    polyLines.add(polyLine);
+    /*
     try 
     {
     final List<Map<String, dynamic>> data = await globals.dataBase                
@@ -65,8 +68,10 @@ class _HistoryMapState extends State<HistoryMap>
       // Loop over database records trips
     for (var element in data) 
     { 
+      double colorPercent = count/data.length.toInt() * 100;
+
       // Clear Polyline
-      polyLine = Polyline(isDotted: true, points: [LatLng(0,0)], strokeWidth: 4, color: Colors.green);
+      polyLine = Polyline(isDotted: true, points: [LatLng(0,0)], strokeWidth: 4, color: getColorPercent(colorPercent.toInt()));
       
       //print ("trip $count ${globals.getColorValue(count)}");      
       print (element['trip_data']);
@@ -94,7 +99,8 @@ class _HistoryMapState extends State<HistoryMap>
               content: Text('Fejl ved hentning af profil : $e'),
               backgroundColor: Colors.red,
             ));
-          }          
+          }
+          */          
   return Future.value(polyLines);
       //return polyLines;
   }
@@ -163,19 +169,18 @@ class _HistoryMapState extends State<HistoryMap>
     double _lat,_lng;
     double _tripLength;
 
-
     _polyLines.clear();
     // Loop over database records trips
     for (var element in jsonArray) 
     { 
-      // define new empty Polyline
-      _polyLine = Polyline(isDotted: true, points: [LatLng(0,0)], strokeWidth: 4, color: Colors.green);
-      _polyLine.points.clear();
-      
-      //print ("trip $count ${globals.getColorValue(count)}");      
-      print (element['trip_data']);
+      // Calculate color
+      double colorPercent = _count/jsonArray.length.toInt() * 100;
 
-        
+      // define new empty Polyline
+      _polyLine = Polyline(isDotted: true, points: [LatLng(0,0)], strokeWidth: 4, color: getColorPercent(colorPercent.toInt()));
+      _polyLine.points.clear();
+              
+      print ("Adding Polyline ${element["trip_data"]}");
       for (var item in jsonDecode(element["trip_data"])) 
       {                
         _polyLine.points.add(LatLng(item['lat'], item['long']));        
@@ -186,7 +191,7 @@ class _HistoryMapState extends State<HistoryMap>
 
       // Adding Polyline to map        
       print ("Adding Polyline $_count");
-      
+       
       //Add polyline
       _polyLines.add(_polyLine);
 
@@ -261,7 +266,7 @@ class _HistoryMapState extends State<HistoryMap>
         case 1:
         // Not Current user
         try { 
-          final data = await globals.dataBase                
+          final List<Map<String, dynamic>> data = await globals.dataBase                
                 .from("user_get_trips")
                 .select<List<Map<String, dynamic>>>("trip_age_days, trip_data")     
                 .not('user_id','eq', userId)
@@ -269,7 +274,7 @@ class _HistoryMapState extends State<HistoryMap>
 
             if (data.isNotEmpty) 
             {
-              print(data);
+              polylines = getPolylines(data);
             }
             else
             {
@@ -286,13 +291,13 @@ class _HistoryMapState extends State<HistoryMap>
         case 2:
          // All user trips
           try { 
-          final data = await globals.dataBase                
+          final List<Map<String, dynamic>> data = await globals.dataBase                
                 .from("user_get_trips")
                 .select<List<Map<String, dynamic>>>("trip_age_days, trip_data")   
                 .order("trip_age_days", ascending: true);
           if (data.isNotEmpty) 
           {
-            print(data);                          
+             polylines = getPolylines(data);                       
           }
           else
           {

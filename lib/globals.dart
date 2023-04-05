@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:supabase/supabase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:package_info_plus/package_info_plus.dart';
 import 'package:version_check/version_check.dart';
 
 bool bDebug = true;
@@ -18,7 +20,7 @@ String? version = '';
 String? storeVersion = '';
 String? storeUrl = '';
 String? packageName = '';
-final versionCheck = VersionCheck(country: 'dk');
+
 
 // Database init
 const supabaseUrl = 'https://zbqoritnaqhkridbyaxc.supabase.co';
@@ -26,15 +28,39 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 final dataBase = SupabaseClient(supabaseUrl, supabaseKey);
 User? gUser;
 
-
-//Shared Preferences
-
-Future<void> initSPHelper() async {
-  await SPHelper.sp.initSharedPreferences();
-  //await Future.delayed(const Duration(milliseconds: 3000));
+/*
+// Get Version
+Future<void> initVersion() async 
+{
+  await getterVersion.gv.initVersion();
 }
 
-class SPHelper {
+class getterVersion
+{
+  getterVersion._();
+  static getterVersion gv = getterVersion._();
+  PackageInfo? packageInfo;
+  
+  // Get local version
+  Future<void> initVersion() async 
+  {
+    packageInfo = await PackageInfo.fromPlatform();
+  }
+
+  String? getVersion() {
+    return packageInfo?.version ?? "";
+  }
+}
+*/
+
+//Shared Preferences
+Future<void> initSPHelper() async 
+{
+  await SPHelper.sp.initSharedPreferences();
+}
+
+class SPHelper 
+{
   SPHelper._();
   static SPHelper sp = SPHelper._();
   SharedPreferences? prefs;
@@ -85,42 +111,29 @@ Future<bool> onWillPop(context) async {
       false;
 }
 
-Color getColorValue(value_) {
-  return Color.fromRGBO(getRed(value_), getGreen(value_), 0, 200);
-}
-
-int getRed(i) {
-  var percent = i / 100;
-  return clip(percent * 200 * 2);
-}
-
-int getGreen(i) {
-  var percent = i / 100;
-  return clip((200 - (percent * 200)) * 2);
-}
-
-int clip(num) {
-  if (num > 200) {
-    return num;
-  } 
-  else 
-  {
-    return num;
-  }
+Color getColorPercent(int percent)
+{
+  double I=0;
+  
+  var r = percent<50 ? 255 : (255 - (percent * 2-100) * 255 / 100).floor();
+  var g = percent>50 ? 255 : ((percent * 2) * 255 / 100).floor();
+  return Color.fromARGB(255,r,g,0);
 }
 
 // Version Check
-Future checkVersion(BuildContext context) async {
-      await versionCheck.checkVersion(context);    
-      version = versionCheck.packageVersion;      
-      packageName = versionCheck.packageName;
-      storeVersion = versionCheck.storeVersion;
-      storeUrl = versionCheck.storeUrl;      
-   
-      if (bDebug) { print("globals.dart: (checkVersion) Version:$version build:$versionCheck.");
-      }
-
-  }
+Future checkVersion(BuildContext context) async 
+{
+      final versionCheck = VersionCheck(country: 'dk');
+      await versionCheck.checkVersion(context).whenComplete(() 
+      {
+        version = versionCheck.packageVersion;
+        packageName = versionCheck.packageName;
+        storeVersion = versionCheck.storeVersion;
+        storeUrl = versionCheck.storeUrl;
+      });    
+      //await Future.delayed(const Duration(milliseconds: 4000));
+      if (bDebug) print("globals.dart: (checkVersion) Version:$version build:$storeVersion storeUrel: $storeUrl");      
+}
 
   void customShowUpdateDialog(BuildContext context, VersionCheck versionCheck) {
   showDialog(

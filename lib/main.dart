@@ -7,30 +7,26 @@ import 'SignInPage.dart';
 import 'SignUpPage.dart';
 import 'SignInOrSignUp.dart';
 import 'Globals.dart' as globals;
-import 'package:package_info_plus/package_info_plus.dart';
+
 
 bool debug = globals.bDebug;
 
-main() async {
-  runApp(const MyApp());
-// getting Globals
- print("main() Called in main.dart");
-  
-  globals.initSPHelper();
-  globals.initSPHelper().whenComplete(() 
-    {
-    globals.gsUserName = globals.SPHelper.sp.get("useremail")!;
-    globals.gsPassword = globals.SPHelper.sp.get("userpassword")!;
-    if (debug) print("globals.gsUserName=${globals.gsUserName}");
-    if (debug) print("globals.gsPassword=${globals.gsPassword}");
-    });  
-   // Get local version
-   PackageInfo packageInfo = await PackageInfo.fromPlatform();   
-   globals.version = packageInfo.version;
-  if (debug) print("(Main.dart) globals.version=${globals.version}");
+main() 
+{
+  runApp(const MyApp());   
 }
+/*
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();  // make sure plugins are initialized properly
+  globals.checkVersion(context).whenComplete(() 
+    {
+      if (debug) print("(Main.dart) checking for current store version=${globals.version}");     
+    });
+}
+*/
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatefulWidget 
+{
   const MyApp({Key? key}) : super(key: key);
   
 @override
@@ -40,12 +36,39 @@ class MyApp extends StatefulWidget {
 class _stateMyApp extends State<MyApp> {
 
  @override
-  initState() {
-    print("main.dart (initstate) Called in main.dart");    
+  void didChangeDependencies() 
+  {
+    super.didChangeDependencies();
+    WidgetsFlutterBinding.ensureInitialized();  // make sure plugins are initialized properly
+    globals.checkVersion(context).whenComplete(() 
+    {
+      if (debug) print("(Main.dart) checking for current store version=${globals.version}");     
+    });
+  }
+
+ @override
+  initState() 
+  {
+    super.initState();     
+    print("main.dart (initstate) Called in main.dart");   
+    //globals.checkVersion(context);
+    globals.checkVersion(context).whenComplete(() 
+    {
+      if (debug) print("(main.dart) checkVersion version: ${globals.version} store URL: ${globals.storeUrl}"); 
+    });
+ 
+    globals.initSPHelper();
+    globals.initSPHelper().whenComplete(() 
+    {
+      globals.gsUserName = globals.SPHelper.sp.get("useremail")!;
+      globals.gsPassword = globals.SPHelper.sp.get("userpassword")!;
+      if (debug) print("globals.gsUserName=${globals.gsUserName}");
+      if (debug) print("globals.gsPassword=${globals.gsPassword}");
+    }); 
+    // Check for updated version
     
-    super.initState();       
-    globals.checkVersion(context); 
-        
+      
+            
     if (debug) print("(Main.dart) globals.version=${globals.version}");
   }
   
