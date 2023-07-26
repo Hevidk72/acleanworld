@@ -215,7 +215,7 @@ class _HistoryMapState extends State<HistoryMap>
     // Until currentLocation is initially updated, Widget can locate to 0, 0
     // by default or store previous location value to show.
     if (_currentLocation != null) {
-      currentLatLng =
+      currentLatLng = 
           LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!);
       _currentZoom = _mapController.zoom;
     } else {
@@ -243,7 +243,7 @@ class _HistoryMapState extends State<HistoryMap>
                 .from("user_get_trips")
                 .select<List<Map<String, dynamic>>>("trip_age_days, trip_data")                
                 .match({'user_id': userId})
-                .order("trip_age_days", ascending: true);               
+                .order("trip_age_days", ascending: false);               
 
             if (data.isNotEmpty) 
             {            
@@ -270,7 +270,7 @@ class _HistoryMapState extends State<HistoryMap>
                 .from("user_get_trips")
                 .select<List<Map<String, dynamic>>>("trip_age_days, trip_data")     
                 .not('user_id','eq', userId)
-                .order("trip_age_days", ascending: true);
+                .order("trip_age_days", ascending: false);
 
             if (data.isNotEmpty) 
             {
@@ -294,7 +294,7 @@ class _HistoryMapState extends State<HistoryMap>
           final List<Map<String, dynamic>> data = await globals.dataBase                
                 .from("user_get_trips")
                 .select<List<Map<String, dynamic>>>("trip_age_days, trip_data")   
-                .order("trip_age_days", ascending: true);
+                .order("trip_age_days", ascending: false);
           if (data.isNotEmpty) 
           {
              polylines = getPolylines(data);                       

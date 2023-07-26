@@ -1,10 +1,9 @@
 import 'dart:io';
-import 'dart:convert';
+//import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:supabase/supabase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-//import 'package:package_info_plus/package_info_plus.dart';
 import 'package:version_check/version_check.dart';
 
 bool bDebug = true;
@@ -27,31 +26,6 @@ const supabaseUrl = 'https://zbqoritnaqhkridbyaxc.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpicW9yaXRuYXFoa3JpZGJ5YXhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE2Njg2MzI0NDEsImV4cCI6MTk4NDIwODQ0MX0.NO3SvLCPEmXMFIVFiHBYV9ZLp0o2IFgndMzpkwQG_F0';
 final dataBase = SupabaseClient(supabaseUrl, supabaseKey);
 User? gUser;
-
-/*
-// Get Version
-Future<void> initVersion() async 
-{
-  await getterVersion.gv.initVersion();
-}
-
-class getterVersion
-{
-  getterVersion._();
-  static getterVersion gv = getterVersion._();
-  PackageInfo? packageInfo;
-  
-  // Get local version
-  Future<void> initVersion() async 
-  {
-    packageInfo = await PackageInfo.fromPlatform();
-  }
-
-  String? getVersion() {
-    return packageInfo?.version ?? "";
-  }
-}
-*/
 
 //Shared Preferences
 Future<void> initSPHelper() async 
@@ -113,7 +87,7 @@ Future<bool> onWillPop(context) async {
 
 Color getColorPercent(int percent)
 {
-  double I=0;
+  //double I=0;
   
   var r = percent<50 ? 255 : (255 - (percent * 2-100) * 255 / 100).floor();
   var g = percent>50 ? 255 : ((percent * 2) * 255 / 100).floor();
