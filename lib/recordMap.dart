@@ -145,7 +145,7 @@ class _RecordMapState extends State<RecordMap> {
 
     final markers = <Marker>
     [
-      Marker(width: 40,height: 40, point: currentLatLng, builder: (ctx) => const Icon(Icons.man)),
+      Marker(width: 40,height: 40, point: currentLatLng, child: const Icon(Icons.man)),
     ];
 
     return WillPopScope(

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math' as math;
 import 'package:acleanworld/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -52,8 +51,8 @@ class _HistoryMapState extends State<HistoryMap>
 
   Future<List<Polyline>> getEmptyPolyLine() async {
     var polyLines =[Polyline(points: [LatLng(55.6577721, 9.3988780)],strokeWidth: 4, color: Colors.red, ),];  
-    String userId = globals.dataBase.auth.currentUser!.id;     
-    int count = 1;
+    //String userId = globals.dataBase.auth.currentUser!.id;     
+    //int count = 1;
     var polyLine = Polyline(isDotted: true, points: [LatLng(55.6577721,9.3988783)], strokeWidth: 0, color: Colors.green);
     polyLines.add(polyLine);
     /*
@@ -166,9 +165,9 @@ class _HistoryMapState extends State<HistoryMap>
     int _count = 1;          
     final _polyLines = [Polyline(points:[LatLng(0,9)], strokeWidth: 4, color: Colors.amber)];
     Polyline _polyLine = Polyline(isDotted: true, points: [LatLng(0,0)], strokeWidth: 4, color: Colors.green);
-    double _lat,_lng;
-    double _tripLength;
-
+   // double _lat,_lng;
+    //double _tripLength;
+    print ("JSON arrayine ${jsonArray.toString()}");
     _polyLines.clear();
     // Loop over database records trips
     for (var element in jsonArray) 
@@ -228,7 +227,7 @@ class _HistoryMapState extends State<HistoryMap>
         width: 40,
         height: 40,
         point: currentLatLng,
-        builder: (ctx) => const Icon(Icons.my_location),
+        child:  const Icon(Icons.my_location),
       ),
     ];
 
@@ -237,6 +236,7 @@ class _HistoryMapState extends State<HistoryMap>
       switch (index) {
         case 0:
         // Current user trips
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Current user selected!'), backgroundColor: Colors.red));
           try 
           {            
             final List<Map<String, dynamic>> data = await globals.dataBase                
@@ -265,6 +265,7 @@ class _HistoryMapState extends State<HistoryMap>
           break;
         case 1:
         // Not Current user
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Other users selected!'), backgroundColor: Colors.red));
         try { 
           final List<Map<String, dynamic>> data = await globals.dataBase                
                 .from("user_get_trips")
@@ -290,10 +291,11 @@ class _HistoryMapState extends State<HistoryMap>
           break;
         case 2:
          // All user trips
+         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('All users selected!'), backgroundColor: Colors.red));
           try { 
           final List<Map<String, dynamic>> data = await globals.dataBase                
                 .from("user_get_trips")
-                .select<List<Map<String, dynamic>>>("trip_age_days, trip_data")   
+                .select<List<Map<String, dynamic>>>("description,trip_age_days,trip_data")   
                 .order("trip_age_days", ascending: false);
           if (data.isNotEmpty) 
           {
@@ -328,8 +330,7 @@ class _HistoryMapState extends State<HistoryMap>
             ],
           );
         },
-      );
-      
+      );      
     }
 
     return WillPopScope(

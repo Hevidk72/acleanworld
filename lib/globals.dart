@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:supabase/supabase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:version_check/version_check.dart';
+import 'package:upgrader/upgrader.dart';
+
 
 bool bDebug = true;
 bool gbisLoggedIn = false;
@@ -97,18 +98,19 @@ Color getColorPercent(int percent)
 // Version Check
 Future checkVersion(BuildContext context) async 
 {
-      final versionCheck = VersionCheck(country: 'dk');
-      await versionCheck.checkVersion(context).whenComplete(() 
-      {
-        version = versionCheck.packageVersion;
-        packageName = versionCheck.packageName;
-        storeVersion = versionCheck.storeVersion;
-        storeUrl = versionCheck.storeUrl;
-      });    
+      final versionCheck = UpgraderMessages(code: 'da');
+   
+      //await versionCheck.checkVersion(context).whenComplete(() 
+      //{
+        version = versionCheck.body;
+        packageName = versionCheck.message(UpgraderMessage.prompt);
+        storeVersion = versionCheck.buttonTitleUpdate;
+        storeUrl = versionCheck.buttonTitleIgnore;
+      //});    
       //await Future.delayed(const Duration(milliseconds: 4000));
       if (bDebug) print("globals.dart: (checkVersion) Version:$version build:$storeVersion storeUrel: $storeUrl");      
 }
-
+/*
   void customShowUpdateDialog(BuildContext context, VersionCheck versionCheck) {
   showDialog(
     context: context,
@@ -140,4 +142,6 @@ Future checkVersion(BuildContext context) async
       ],
     ),
   );
+
 }
+*/
